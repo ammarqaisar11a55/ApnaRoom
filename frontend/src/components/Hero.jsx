@@ -1,22 +1,6 @@
 import { useState, useEffect } from 'react'
 import { assetUrl } from '../utils/assets'
 
-function CheckIcon() {
-  return (
-    <svg className="h-5 w-5 text-blue-600" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M20 6 9 17l-5-5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-function StarIcon() {
-  return (
-    <svg className="h-5 w-5 text-amber-400" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="m12 2.5 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3.1-5.8 3.1 1.1-6.5-4.7-4.6 6.5-.9L12 2.5Z" />
-    </svg>
-  )
-}
-
 export default function Hero({ onNavigate }) {
   const [stats, setStats] = useState({
     hostels: 0,
@@ -64,14 +48,9 @@ export default function Hero({ onNavigate }) {
             </div>
 
             <h1 className="max-w-3xl text-5xl font-bold leading-tight text-primary-800 font-display md:text-6xl">
-              Find Your
-              <span className="block bg-gradient-to-r from-blue-500 to-primary-600 bg-clip-text text-transparent">Apna Room</span>
-              Near Campus
+              Where Perfect Spaces Meet the
+              <span className="block bg-gradient-to-r from-blue-500 to-primary-600 bg-clip-text text-transparent">Comfort of Home.</span>
             </h1>
-
-            <p className="text-lg text-gray-600 leading-relaxed max-w-lg">
-              Verified, affordable, and student-friendly hostels near major universities in Pakistan. Compare rooms, safety, food, and commute time before you book.
-            </p>
 
             <div className="flex max-w-2xl flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-2 shadow-card sm:flex-row">
               <input
@@ -108,35 +87,11 @@ export default function Hero({ onNavigate }) {
             <div className="relative">
               <div className="aspect-[5/4] w-full overflow-hidden rounded-[2rem] border border-blue-100 bg-blue-50 shadow-lg">
                 <img
-                  src={assetUrl('assets/hero.png')}
-                  alt="Modern student hostel room"
+                  src={assetUrl('assets/karachi.png')}
+                  alt="Modern hostel building in the city"
                   className="h-full w-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary-800/25 via-transparent to-transparent"></div>
-              </div>
-
-              <div className="absolute right-5 top-6 rounded-2xl border border-gray-100 bg-white/95 p-4 shadow-lg backdrop-blur">
-                <div className="flex gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-50">
-                    <CheckIcon />
-                  </div>
-                  <div>
-                    <div className="text-xs text-gray-500">Top University</div>
-                    <div className="font-semibold text-gray-700">LUMS, Lahore</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="absolute bottom-6 left-5 rounded-2xl border border-gray-100 bg-white/95 p-4 shadow-lg backdrop-blur">
-                <div className="flex gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-50">
-                    <StarIcon />
-                  </div>
-                  <div>
-                    <div className="text-xs text-gray-500">Avg. Rating</div>
-                    <div className="font-semibold text-gray-700">4.8 from students</div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
