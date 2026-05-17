@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import AuthShell from '../components/AuthShell'
+import { apiUrl } from '../config/api'
 
 function Icon({ type }) {
   const paths = {
@@ -125,7 +126,7 @@ export default function SignupPage() {
         payload.city = formData.city
       }
 
-      const response = await fetch('http://localhost:5000/api/signup', {
+      const response = await fetch(apiUrl('/api/signup'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
