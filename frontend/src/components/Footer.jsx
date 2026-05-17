@@ -1,7 +1,11 @@
+import { Link } from 'react-router-dom'
+
 export default function Footer({ onNavigate }) {
   const handleNavClick = (e, page) => {
-    e.preventDefault()
-    onNavigate(page)
+    if (onNavigate) {
+      e.preventDefault()
+      onNavigate(page)
+    }
   }
 
   return (
@@ -28,11 +32,17 @@ export default function Footer({ onNavigate }) {
             <p className="text-blue-100 text-sm">
               Pakistan's most trusted student hostel platform. Connecting students with affordable, verified, and comfortable hostels since 2024.
             </p>
-            <div className="flex gap-4 text-lg">
-              <a href="#" className="hover:text-blue-300 transition-colors">𝕗</a>
-              <a href="#" className="hover:text-blue-300 transition-colors">📷</a>
-              <a href="#" className="hover:text-blue-300 transition-colors">𝕏</a>
-              <a href="#" className="hover:text-blue-300 transition-colors">▶</a>
+            <div className="flex gap-3">
+              {['f', 'ig', 'x', 'yt'].map((label) => (
+                <a
+                  key={label}
+                  href="#"
+                  aria-label={label}
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-blue-500/50 text-xs font-bold uppercase text-blue-100 transition-colors hover:border-blue-300 hover:text-white"
+                >
+                  {label}
+                </a>
+              ))}
             </div>
           </div>
 
@@ -41,10 +51,10 @@ export default function Footer({ onNavigate }) {
             <h4 className="font-bold mb-4">Explore</h4>
             <ul className="space-y-2 text-blue-100">
               <li><a href="#cities" className="hover:text-white transition-colors">Popular Cities</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Lahore Hostels</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Islamabad Hostels</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Karachi Hostels</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Peshawar Hostels</a></li>
+              <li><a href="#cities" className="hover:text-white transition-colors">Lahore Hostels</a></li>
+              <li><a href="#cities" className="hover:text-white transition-colors">Islamabad Hostels</a></li>
+              <li><a href="#cities" className="hover:text-white transition-colors">Karachi Hostels</a></li>
+              <li><a href="#cities" className="hover:text-white transition-colors">Peshawar Hostels</a></li>
             </ul>
           </div>
 
@@ -52,7 +62,7 @@ export default function Footer({ onNavigate }) {
           <div>
             <h4 className="font-bold mb-4">Company</h4>
             <ul className="space-y-2 text-blue-100">
-              <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
+              <li><Link to="/signup" className="hover:text-white transition-colors">List a Hostel</Link></li>
               <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
               <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
               <li><a href="#" className="hover:text-white transition-colors">Press</a></li>
@@ -75,7 +85,7 @@ export default function Footer({ onNavigate }) {
 
         <div className="border-t border-blue-600 pt-8">
           <p className="text-center text-blue-100">
-            © 2024 ApnaRoom. Made with ❤️ in Pakistan. All rights reserved.
+            © 2024 ApnaRoom. Built in Pakistan. All rights reserved.
           </p>
         </div>
       </div>

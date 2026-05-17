@@ -1,4 +1,21 @@
 import { useState, useEffect } from 'react'
+import { assetUrl } from '../utils/assets'
+
+function CheckIcon() {
+  return (
+    <svg className="h-5 w-5 text-blue-600" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M20 6 9 17l-5-5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function StarIcon() {
+  return (
+    <svg className="h-5 w-5 text-amber-400" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="m12 2.5 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3.1-5.8 3.1 1.1-6.5-4.7-4.6 6.5-.9L12 2.5Z" />
+    </svg>
+  )
+}
 
 export default function Hero({ onNavigate }) {
   const [stats, setStats] = useState({
@@ -35,79 +52,74 @@ export default function Hero({ onNavigate }) {
   }
 
   return (
-    <section className="pt-32 pb-16 px-6 relative">
+    <section className="relative px-6 pb-20 pt-32">
       <div className="max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          {/* Content */}
+        <div className="grid gap-12 lg:grid-cols-[1.02fr_0.98fr] lg:items-center">
           <div className="space-y-8">
             <div className="inline-block">
-              <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-full">
+              <div className="flex items-center gap-2 rounded-full border border-blue-100 bg-white/85 px-4 py-2 shadow-sm">
                 <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
                 <span className="text-sm font-medium text-blue-600">Pakistan's #1 Student Hostel Platform</span>
               </div>
             </div>
 
-            <h1 className="text-5xl md:text-6xl font-bold font-display text-primary-700 leading-tight">
-              Find Your<br />
-              <span className="bg-gradient-to-r from-blue-500 to-blue-600 bg-clip-text text-transparent">Apna Room</span><br />
+            <h1 className="max-w-3xl text-5xl font-bold leading-tight text-primary-800 font-display md:text-6xl">
+              Find Your
+              <span className="block bg-gradient-to-r from-blue-500 to-primary-600 bg-clip-text text-transparent">Apna Room</span>
               Near Campus
             </h1>
 
             <p className="text-lg text-gray-600 leading-relaxed max-w-lg">
-              Verified, affordable, and student-friendly hostels near every major university in Pakistan. Focus on your studies — we'll handle your stay.
+              Verified, affordable, and student-friendly hostels near major universities in Pakistan. Compare rooms, safety, food, and commute time before you book.
             </p>
 
-            {/* Search Bar */}
-            <div className="flex gap-3 flex-col sm:flex-row">
+            <div className="flex max-w-2xl flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-2 shadow-card sm:flex-row">
               <input
                 id="searchInput"
                 type="text"
                 placeholder="Search by university, city, or hostel name..."
-                className="flex-1 px-4 py-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="min-h-12 flex-1 rounded-xl border border-transparent bg-gray-50 px-4 py-3 text-gray-800 outline-none transition focus:border-blue-200 focus:bg-white focus:ring-2 focus:ring-blue-100"
               />
               <button
                 onClick={handleSearch}
-                className="px-6 py-3 bg-gradient-to-r from-primary-700 to-blue-500 text-white rounded-lg font-semibold hover:shadow-lg transition-all active:scale-95"
+                className="min-h-12 rounded-xl bg-gradient-to-r from-primary-700 to-blue-500 px-6 py-3 font-semibold text-white shadow-sm transition-all hover:shadow-lg active:scale-95"
               >
-                Search →
+                Search
               </button>
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-6 pt-6">
-              <div>
+            <div className="grid max-w-2xl grid-cols-3 gap-3 pt-3 sm:gap-6">
+              <div className="rounded-2xl border border-gray-100 bg-white/80 p-4 shadow-sm">
                 <h3 className="text-3xl font-bold text-primary-700">{stats.hostels}+</h3>
                 <p className="text-gray-600 text-sm">Verified Hostels</p>
               </div>
-              <div>
+              <div className="rounded-2xl border border-gray-100 bg-white/80 p-4 shadow-sm">
                 <h3 className="text-3xl font-bold text-primary-700">{stats.cities}</h3>
-                <p className="text-gray-600 text-sm">Universities Covered</p>
+                <p className="text-gray-600 text-sm">Major Cities</p>
               </div>
-              <div>
+              <div className="rounded-2xl border border-gray-100 bg-white/80 p-4 shadow-sm">
                 <h3 className="text-3xl font-bold text-primary-700">{stats.guests.toLocaleString()}+</h3>
                 <p className="text-gray-600 text-sm">Happy Students</p>
               </div>
             </div>
           </div>
 
-          {/* Visual */}
           <div className="relative hidden md:block">
             <div className="relative">
-              <div className="w-full aspect-square bg-gradient-to-br from-blue-200 to-blue-100 rounded-3xl flex items-center justify-center">
+              <div className="aspect-[5/4] w-full overflow-hidden rounded-[2rem] border border-blue-100 bg-blue-50 shadow-lg">
                 <img
-                  src="/assets/hero.png"
-                  alt="Modern student hostel"
-                  className="w-4/5 h-4/5 object-cover rounded-2xl"
-                  onError={(e) => {
-                    e.target.src = 'https://images.unsplash.com/photo-1572365992253-3cb3e56dd362?w=600&h=600&fit=crop'
-                  }}
+                  src={assetUrl('assets/hero.png')}
+                  alt="Modern student hostel room"
+                  className="h-full w-full object-cover"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary-800/25 via-transparent to-transparent"></div>
               </div>
 
-              {/* Float Cards */}
-              <div className="absolute top-8 right-0 bg-white p-4 rounded-xl shadow-lg border border-gray-100 animate-bounce" style={{ animationDelay: '0s' }}>
+              <div className="absolute right-5 top-6 rounded-2xl border border-gray-100 bg-white/95 p-4 shadow-lg backdrop-blur">
                 <div className="flex gap-3">
-                  <span className="text-2xl">🎓</span>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-50">
+                    <CheckIcon />
+                  </div>
                   <div>
                     <div className="text-xs text-gray-500">Top University</div>
                     <div className="font-semibold text-gray-700">LUMS, Lahore</div>
@@ -115,12 +127,14 @@ export default function Hero({ onNavigate }) {
                 </div>
               </div>
 
-              <div className="absolute bottom-8 left-0 bg-white p-4 rounded-xl shadow-lg border border-gray-100 animate-bounce" style={{ animationDelay: '0.2s' }}>
+              <div className="absolute bottom-6 left-5 rounded-2xl border border-gray-100 bg-white/95 p-4 shadow-lg backdrop-blur">
                 <div className="flex gap-3">
-                  <span className="text-2xl">⭐</span>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-50">
+                    <StarIcon />
+                  </div>
                   <div>
                     <div className="text-xs text-gray-500">Avg. Rating</div>
-                    <div className="font-semibold text-gray-700">4.8 ★★★★★</div>
+                    <div className="font-semibold text-gray-700">4.8 from students</div>
                   </div>
                 </div>
               </div>

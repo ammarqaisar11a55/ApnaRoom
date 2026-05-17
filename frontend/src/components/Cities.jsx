@@ -1,28 +1,26 @@
+import { assetUrl } from '../utils/assets'
+
 export default function Cities() {
   const cities = [
     {
       name: 'Lahore',
       description: '42 Hostels • LUMS, UET, PU, UMT',
-      image: '/assets/lahore.png',
-      fallback: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',
+      image: assetUrl('assets/lahore.png'),
     },
     {
       name: 'Islamabad',
       description: '35 Hostels • NUST, COMSATS, QAU',
-      image: '/assets/islamabad.png',
-      fallback: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=400&fit=crop',
+      image: assetUrl('assets/islamabad.png'),
     },
     {
       name: 'Karachi',
       description: '28 Hostels • IBA, NED, FAST',
-      image: '/assets/karachi.png',
-      fallback: 'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=400&h=400&fit=crop',
+      image: assetUrl('assets/karachi.png'),
     },
     {
       name: 'Peshawar',
       description: '18 Hostels • UET, UoP, IMSciences',
-      image: '/assets/hunza.png',
-      fallback: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=400&fit=crop',
+      image: assetUrl('assets/hunza.png'),
     },
   ]
 
@@ -39,17 +37,14 @@ export default function Cities() {
           {cities.map((city) => (
             <div
               key={city.name}
-              className="group relative rounded-2xl overflow-hidden shadow-card hover:shadow-lg transition-all duration-300 cursor-pointer reveal"
+              className="group relative cursor-pointer overflow-hidden rounded-2xl border border-white bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lg reveal"
             >
               <img
                 src={city.image}
-                alt={city.name}
-                className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
-                onError={(e) => {
-                  e.target.src = city.fallback
-                }}
+                alt={`${city.name} student hostels`}
+                className="h-72 w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex flex-col justify-end p-6">
+              <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-primary-800/85 via-primary-800/20 to-transparent p-6">
                 <h3 className="text-2xl font-bold text-white font-display">{city.name}</h3>
                 <p className="text-gray-200 text-sm mt-1">{city.description}</p>
               </div>
