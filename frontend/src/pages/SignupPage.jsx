@@ -1,6 +1,58 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import AnimatedBlobs from '../components/AnimatedBlobs'
+import AuthShell from '../components/AuthShell'
+
+function Icon({ type }) {
+  const paths = {
+    user: 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z',
+    email: 'M4 6h16v12H4V6Zm0 1 8 6 8-6',
+    phone: 'M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.7.6 2.5a2 2 0 0 1-.4 2.1L8 9.6a16 16 0 0 0 6.4 6.4l1.3-1.3a2 2 0 0 1 2.1-.4c.8.3 1.6.5 2.5.6A2 2 0 0 1 22 16.9Z',
+    school: 'M22 10 12 5 2 10l10 5 10-5ZM6 12.5V17c2.2 2 9.8 2 12 0v-4.5',
+    building: 'M4 21h16M6 21V5h9v16M15 9h3v12M9 9h3M9 13h3M9 17h3',
+    city: 'M3 21h18M5 21V7h6v14M13 21V3h6v18M7 11h2M7 15h2M15 7h2M15 11h2M15 15h2',
+    lock: 'M7 11V8a5 5 0 0 1 10 0v3M6 11h12v10H6V11Z',
+    eye: 'M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z',
+  }
+
+  return (
+    <svg className="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d={paths[type]} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function RoleButton({ active, icon, label, onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl px-4 text-sm font-semibold transition-all ${
+        active
+          ? 'bg-white text-primary-800 shadow-sm ring-1 ring-slate-200'
+          : 'text-slate-600 hover:text-slate-900'
+      }`}
+    >
+      <Icon type={icon} />
+      {label}
+    </button>
+  )
+}
+
+function Field({ id, label, icon, children }) {
+  return (
+    <div>
+      <label htmlFor={id} className="mb-2 block text-sm font-semibold text-slate-700">
+        {label}
+      </label>
+      <div className="relative">
+        <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2">
+          <Icon type={icon} />
+        </span>
+        {children}
+      </div>
+    </div>
+  )
+}
 
 export default function SignupPage() {
   const navigate = useNavigate()
@@ -20,6 +72,11 @@ export default function SignupPage() {
     agreeTerms: false,
   })
 
+  const inputClass =
+    'min-h-12 w-full rounded-xl border border-slate-200 bg-white py-3 pl-12 pr-4 text-slate-900 outline-none transition focus:border-blue-300 focus:ring-4 focus:ring-blue-100'
+
+  const selectClass = `${inputClass} appearance-none`
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
     setFormData((prev) => ({
@@ -28,40 +85,39 @@ export default function SignupPage() {
     }))
 
     if (name === 'password') {
-      const strength = calculatePasswordStrength(value)
-      setPasswordStrength(strength)
+      setPasswordStrength(calculatePasswordStrength(value))
     }
   }
 
   const calculatePasswordStrength = (password) => {
     let strength = 0
-    if (password.length >= 8) strength++
-    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++
-    if (/[0-9]/.test(password)) strength++
-    if (/[^a-zA-Z0-9]/.test(password)) strength++
+    if (password.length >= 8) strength += 1
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength += 1
+    if (/[0-9]/.test(password)) strength += 1
+    if (/[^a-zA-Z0-9]/.test(password)) strength += 1
     return strength
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
-    
+
     if (!formData.agreeTerms) {
-      setError('Please agree to Terms of Service and Privacy Policy')
+      setError('Please agree to the Terms of Service and Privacy Policy.')
       return
     }
 
     setIsLoading(true)
-    
+
     try {
       const payload = {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
         password: formData.password,
-        role
+        role,
       }
-      
+
       if (role === 'student') {
         payload.university = formData.university
       } else {
@@ -72,15 +128,14 @@ export default function SignupPage() {
       const response = await fetch('http://localhost:5000/api/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       })
-      
+
       const data = await response.json()
-      
+
       if (response.ok) {
         localStorage.setItem('apnaroom_token', data.token)
         localStorage.setItem('apnaroom_user', JSON.stringify(data.user))
-        alert(`Account created! Welcome, ${data.user.name}!`)
         navigate('/')
       } else {
         setError(data.error || 'Signup failed')
@@ -94,343 +149,204 @@ export default function SignupPage() {
 
   const getPasswordStrengthColor = () => {
     if (passwordStrength <= 1) return 'bg-red-500'
-    if (passwordStrength === 2) return 'bg-yellow-500'
+    if (passwordStrength === 2) return 'bg-amber-500'
     if (passwordStrength === 3) return 'bg-blue-500'
-    return 'bg-green-500'
+    return 'bg-emerald-500'
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <AnimatedBlobs />
-      <div className="grid lg:grid-cols-2 min-h-screen">
-        {/* Left Panel */}
-        <div className="hidden lg:flex flex-col justify-between p-12 bg-gradient-to-br from-primary-700 to-blue-600 text-white relative overflow-hidden">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full -ml-48 -mb-48"></div>
-          </div>
-          <div className="relative z-10">
-            <a href="/" onClick={() => handleNavClick('home')} className="flex items-center gap-2 mb-12">
-              <svg className="w-9 h-9" viewBox="0 0 40 40" fill="none">
-                <rect width="40" height="40" rx="10" fill="url(#lg2)" />
-                <path d="M20 8L8 18H12V30H18V23H22V30H28V18H32L20 8Z" fill="white" />
-                <defs>
-                  <linearGradient id="lg2" x1="0" y1="0" x2="40" y2="40">
-                    <stop stopColor="#2563eb" />
-                    <stop offset="1" stopColor="#1e3a5f" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <span className="text-2xl font-black font-display">
-                Apna<span className="text-blue-300">Room</span>
-              </span>
-            </a>
-            <h2 className="text-4xl font-bold mb-4 font-display">Join ApnaRoom! 🚀</h2>
-            <p className="text-blue-100 mb-8">Create your free account and find your perfect room — or list your hostel to reach thousands of students.</p>
-
-            <div className="space-y-4">
-              <div className="flex gap-3 items-start">
-                <span className="text-2xl">⚡</span>
-                <div>
-                  <div className="font-semibold">Instant booking confirmation</div>
-                </div>
-              </div>
-              <div className="flex gap-3 items-start">
-                <span className="text-2xl">💰</span>
-                <div>
-                  <div className="font-semibold">No signup or booking fees</div>
-                </div>
-              </div>
-              <div className="flex gap-3 items-start">
-                <span className="text-2xl">🤝</span>
-                <div>
-                  <div className="font-semibold">Trusted by 12,000+ students</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Panel */}
-        <div className="flex items-center justify-center p-8 overflow-y-auto">
-          <div className="w-full max-w-md space-y-8 py-8">
-            {/* Header */}
-            <Link to="/" className="lg:hidden flex items-center gap-2 mb-8">
-              <svg className="w-8 h-8" viewBox="0 0 40 40" fill="none">
-                <rect width="40" height="40" rx="10" fill="url(#lg2-mobile)" />
-                <path d="M20 8L8 18H12V30H18V23H22V30H28V18H32L20 8Z" fill="white" />
-                <defs>
-                  <linearGradient id="lg2-mobile" x1="0" y1="0" x2="40" y2="40">
-                    <stop stopColor="#2563eb" />
-                    <stop offset="1" stopColor="#1e3a5f" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <span className="text-xl font-black text-primary-700 font-display">
-                Apna<span className="text-blue-500">Room</span>
-              </span>
-            </Link>
-
-            <div>
-              <h1 className="text-3xl font-bold text-primary-700 font-display mb-2">Create Your Account</h1>
-              <p className="text-gray-600">Choose your account type to get started</p>
-            </div>
-
-            {/* Role Tabs */}
-            <div className="flex gap-4 bg-gray-100 p-1 rounded-lg">
-              <button
-                onClick={() => setRole('student')}
-                className={`flex-1 py-2 px-4 rounded-md font-semibold transition-all ${
-                  role === 'student'
-                    ? 'bg-white text-primary-700 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                🎓 Student
-              </button>
-              <button
-                onClick={() => setRole('owner')}
-                className={`flex-1 py-2 px-4 rounded-md font-semibold transition-all ${
-                  role === 'owner'
-                    ? 'bg-white text-primary-700 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                🏠 Hostel Owner
-              </button>
-            </div>
-
-            {error && (
-              <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm">
-                {error}
-              </div>
-            )}
-
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Name */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
-                <div className="relative">
-                  <span className="absolute left-4 top-3.5 text-lg">👤</span>
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Muhammad Ali"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-              </div>
-
-              {/* Email */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
-                <div className="relative">
-                  <span className="absolute left-4 top-3.5 text-lg">✉</span>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="you@university.edu.pk"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-              </div>
-
-              {/* Phone */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
-                <div className="relative">
-                  <span className="absolute left-4 top-3.5 text-lg">📱</span>
-                  <input
-                    type="tel"
-                    name="phone"
-                    placeholder="+92 3XX XXXXXXX"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-              </div>
-
-              {/* Student Field */}
-              {role === 'student' && (
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">University</label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-3.5 text-lg">🎓</span>
-                    <select
-                      name="university"
-                      value={formData.university}
-                      onChange={handleInputChange}
-                      className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
-                    >
-                      <option value="">Select your university</option>
-                      <option>NUST, Islamabad</option>
-                      <option>LUMS, Lahore</option>
-                      <option>FAST-NUCES</option>
-                      <option>COMSATS University</option>
-                      <option>Punjab University</option>
-                      <option>UET Lahore</option>
-                      <option>IBA Karachi</option>
-                      <option>NED University</option>
-                      <option>UET Peshawar</option>
-                      <option>Quaid-i-Azam University</option>
-                      <option>Other</option>
-                    </select>
-                  </div>
-                </div>
-              )}
-
-              {/* Owner Fields */}
-              {role === 'owner' && (
-                <>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Hostel Name</label>
-                    <div className="relative">
-                      <span className="absolute left-4 top-3.5 text-lg">🏠</span>
-                      <input
-                        type="text"
-                        name="hostelName"
-                        placeholder="Your hostel name"
-                        value={formData.hostelName}
-                        onChange={handleInputChange}
-                        className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">City</label>
-                    <div className="relative">
-                      <span className="absolute left-4 top-3.5 text-lg">📍</span>
-                      <select
-                        name="city"
-                        value={formData.city}
-                        onChange={handleInputChange}
-                        className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
-                      >
-                        <option value="">Select city</option>
-                        <option>Lahore</option>
-                        <option>Islamabad</option>
-                        <option>Karachi</option>
-                        <option>Peshawar</option>
-                        <option>Faisalabad</option>
-                        <option>Multan</option>
-                        <option>Other</option>
-                      </select>
-                    </div>
-                  </div>
-                </>
-              )}
-
-              {/* Password */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
-                <div className="relative">
-                  <span className="absolute left-4 top-3.5 text-lg">🔒</span>
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    name="password"
-                    placeholder="Min. 8 characters"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    required
-                    minLength="8"
-                    className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-3.5 text-lg hover:opacity-70"
-                  >
-                    👁
-                  </button>
-                </div>
-                {formData.password && (
-                  <div className="mt-2">
-                    <div className="w-full h-1 bg-gray-200 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full transition-all ${getPasswordStrengthColor()}`}
-                        style={{ width: `${(passwordStrength / 4) * 100}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Terms Agreement */}
-              <label className="flex items-start gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  name="agreeTerms"
-                  checked={formData.agreeTerms}
-                  onChange={handleInputChange}
-                  required
-                  className="w-4 h-4 rounded mt-1 accent-blue-600"
-                />
-                <span className="text-sm text-gray-600">
-                  I agree to the{' '}
-                  <a href="#" className="text-blue-600 hover:text-blue-700 font-semibold">
-                    Terms of Service
-                  </a>{' '}
-                  &{' '}
-                  <a href="#" className="text-blue-600 hover:text-blue-700 font-semibold">
-                    Privacy Policy
-                  </a>
-                </span>
-              </label>
-
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full py-3 bg-gradient-to-r from-primary-700 to-blue-500 text-white rounded-lg font-semibold hover:shadow-lg transition-all active:scale-95 disabled:opacity-70"
-              >
-                {isLoading ? 'Creating Account...' : 'Create Account →'}
-              </button>
-            </form>
-
-            {/* Divider */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-600">or sign up with</span>
-              </div>
-            </div>
-
-            {/* Social Buttons */}
-            <div className="grid grid-cols-2 gap-4">
-              <button className="py-3 px-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all flex items-center justify-center gap-2 font-medium">
-                <svg className="w-5 h-5" viewBox="0 0 48 48">
-                  <path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.9 33.6 29.4 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 8 3l5.7-5.7C34 6 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.2-2.6-.4-3.9z" />
-                </svg>
-                Google
-              </button>
-              <button className="py-3 px-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all flex items-center justify-center gap-2 font-medium">
-                📱 Phone
-              </button>
-            </div>
-
-            {/* Footer Text */}
-            <p className="text-center text-gray-600">
-              Already have an account?{' '}
-              <Link
-                to="/login"
-                className="text-blue-600 hover:text-blue-700 font-semibold cursor-pointer"
-              >
-                Login →
-              </Link>
-            </p>
-          </div>
-        </div>
+    <AuthShell
+      eyebrow="Create your account"
+      title="Start with ApnaRoom"
+      subtitle="Join as a student searching for a better stay, or as a hostel partner ready to grow."
+      footer={
+        <>
+          Already have an account?{' '}
+          <Link to="/login" className="font-semibold text-blue-700 transition-colors hover:text-primary-700">
+            Sign in
+          </Link>
+        </>
+      }
+    >
+      <div className="mb-6 flex rounded-2xl bg-slate-100 p-1">
+        <RoleButton active={role === 'student'} icon="user" label="Student" onClick={() => setRole('student')} />
+        <RoleButton active={role === 'owner'} icon="building" label="Hostel owner" onClick={() => setRole('owner')} />
       </div>
-    </div>
+
+      {error && (
+        <div className="mb-5 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+          {error}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <Field id="name" label="Full name" icon="user">
+          <input
+            id="name"
+            type="text"
+            name="name"
+            placeholder="Enter your full name"
+            value={formData.name}
+            onChange={handleInputChange}
+            required
+            className={inputClass}
+          />
+        </Field>
+
+        <Field id="email" label="Email address" icon="email">
+          <input
+            id="email"
+            type="email"
+            name="email"
+            placeholder="you@example.com"
+            value={formData.email}
+            onChange={handleInputChange}
+            required
+            className={inputClass}
+          />
+        </Field>
+
+        <Field id="phone" label="Phone number" icon="phone">
+          <input
+            id="phone"
+            type="tel"
+            name="phone"
+            placeholder="+92 3XX XXXXXXX"
+            value={formData.phone}
+            onChange={handleInputChange}
+            required
+            className={inputClass}
+          />
+        </Field>
+
+        {role === 'student' ? (
+          <Field id="university" label="University" icon="school">
+            <select
+              id="university"
+              name="university"
+              value={formData.university}
+              onChange={handleInputChange}
+              className={selectClass}
+            >
+              <option value="">Select your university</option>
+              <option>NUST, Islamabad</option>
+              <option>LUMS, Lahore</option>
+              <option>FAST-NUCES</option>
+              <option>COMSATS University</option>
+              <option>Punjab University</option>
+              <option>UET Lahore</option>
+              <option>IBA Karachi</option>
+              <option>NED University</option>
+              <option>UET Peshawar</option>
+              <option>Quaid-i-Azam University</option>
+              <option>Other</option>
+            </select>
+          </Field>
+        ) : (
+          <>
+            <Field id="hostelName" label="Hostel name" icon="building">
+              <input
+                id="hostelName"
+                type="text"
+                name="hostelName"
+                placeholder="Your hostel name"
+                value={formData.hostelName}
+                onChange={handleInputChange}
+                className={inputClass}
+              />
+            </Field>
+
+            <Field id="city" label="City" icon="city">
+              <select
+                id="city"
+                name="city"
+                value={formData.city}
+                onChange={handleInputChange}
+                className={selectClass}
+              >
+                <option value="">Select city</option>
+                <option>Lahore</option>
+                <option>Islamabad</option>
+                <option>Karachi</option>
+                <option>Peshawar</option>
+                <option>Faisalabad</option>
+                <option>Multan</option>
+                <option>Other</option>
+              </select>
+            </Field>
+          </>
+        )}
+
+        <div>
+          <label htmlFor="password" className="mb-2 block text-sm font-semibold text-slate-700">
+            Password
+          </label>
+          <div className="relative">
+            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2">
+              <Icon type="lock" />
+            </span>
+            <input
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              placeholder="Minimum 8 characters"
+              value={formData.password}
+              onChange={handleInputChange}
+              required
+              minLength="8"
+              className="min-h-12 w-full rounded-xl border border-slate-200 bg-white py-3 pl-12 pr-12 text-slate-900 outline-none transition focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 rounded-md p-1 transition hover:bg-slate-100"
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+            >
+              <Icon type="eye" />
+            </button>
+          </div>
+          {formData.password && (
+            <div className="mt-3">
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200">
+                <div
+                  className={`h-full rounded-full transition-all ${getPasswordStrengthColor()}`}
+                  style={{ width: `${(passwordStrength / 4) * 100}%` }}
+                ></div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <input
+            type="checkbox"
+            name="agreeTerms"
+            checked={formData.agreeTerms}
+            onChange={handleInputChange}
+            required
+            className="mt-1 h-4 w-4 rounded border-slate-300 accent-blue-600"
+          />
+          <span className="text-sm leading-6 text-slate-600">
+            I agree to the{' '}
+            <a href="#" className="font-semibold text-blue-700 hover:text-primary-700">
+              Terms of Service
+            </a>{' '}
+            and{' '}
+            <a href="#" className="font-semibold text-blue-700 hover:text-primary-700">
+              Privacy Policy
+            </a>
+            .
+          </span>
+        </label>
+
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="min-h-12 w-full rounded-xl bg-gradient-to-r from-primary-700 to-blue-500 px-5 py-3 font-semibold text-white shadow-sm transition-all hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:opacity-70"
+        >
+          {isLoading ? 'Creating account...' : 'Create account'}
+        </button>
+      </form>
+    </AuthShell>
   )
 }

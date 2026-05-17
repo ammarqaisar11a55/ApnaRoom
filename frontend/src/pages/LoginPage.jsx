@@ -1,10 +1,25 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import AnimatedBlobs from '../components/AnimatedBlobs'
+import AuthShell from '../components/AuthShell'
+
+function Icon({ type }) {
+  const paths = {
+    email: 'M4 6h16v12H4V6Zm0 1 8 6 8-6',
+    lock: 'M7 11V8a5 5 0 0 1 10 0v3M6 11h12v10H6V11Z',
+    eye: 'M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Zm9.5 3a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z',
+    phone: 'M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.7.6 2.5a2 2 0 0 1-.4 2.1L8 9.6a16 16 0 0 0 6.4 6.4l1.3-1.3a2 2 0 0 1 2.1-.4c.8.3 1.6.5 2.5.6A2 2 0 0 1 22 16.9Z',
+  }
+
+  return (
+    <svg className="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d={paths[type]} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
 
 export default function LoginPage() {
   const navigate = useNavigate()
-  const [role, setRole] = useState('student')
+  const [role] = useState('student')
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -26,19 +41,18 @@ export default function LoginPage() {
     e.preventDefault()
     setError('')
     setIsLoading(true)
-    
+
     try {
       const response = await fetch('http://localhost:5000/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: formData.email, password: formData.password, role })
+        body: JSON.stringify({ email: formData.email, password: formData.password, role }),
       })
       const data = await response.json()
-      
+
       if (response.ok) {
         localStorage.setItem('apnaroom_token', data.token)
         localStorage.setItem('apnaroom_user', JSON.stringify(data.user))
-        alert(`Welcome back, ${data.user.name}!`)
         navigate('/')
       } else {
         setError(data.error || 'Login failed')
@@ -51,213 +65,123 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <AnimatedBlobs />
-      <div className="grid lg:grid-cols-2 min-h-screen">
-        {/* Left Panel */}
-        <div className="hidden lg:flex flex-col justify-between p-12 bg-gradient-to-br from-primary-700 to-blue-600 text-white relative overflow-hidden">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full -mr-48 -mt-48"></div>
-          </div>
-          <div className="relative z-10">
-            <a href="/" onClick={() => handleNavClick('home')} className="flex items-center gap-2 mb-12">
-              <svg className="w-9 h-9" viewBox="0 0 40 40" fill="none">
-                <rect width="40" height="40" rx="10" fill="url(#lg1)" />
-                <path d="M20 8L8 18H12V30H18V23H22V30H28V18H32L20 8Z" fill="white" />
-                <defs>
-                  <linearGradient id="lg1" x1="0" y1="0" x2="40" y2="40">
-                    <stop stopColor="#2563eb" />
-                    <stop offset="1" stopColor="#1e3a5f" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <span className="text-2xl font-black font-display">
-                Apna<span className="text-blue-300">Room</span>
-              </span>
-            </a>
-            <h2 className="text-4xl font-bold mb-4 font-display">Welcome Back! 👋</h2>
-            <p className="text-blue-100 mb-8">Access your student dashboard, manage bookings, or check your hostel listings.</p>
+    <AuthShell
+      eyebrow="Secure sign in"
+      title="Welcome back"
+      subtitle="Access bookings, saved rooms, and partner tools from one secure workspace."
+      footer={
+        <>
+          New to ApnaRoom?{' '}
+          <Link to="/signup" className="font-semibold text-blue-700 transition-colors hover:text-primary-700">
+            Create an account
+          </Link>
+        </>
+      }
+    >
+      {error && (
+        <div className="mb-5 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+          {error}
+        </div>
+      )}
 
-            <div className="space-y-4">
-              <div className="flex gap-3 items-start">
-                <span className="text-2xl">🎓</span>
-                <div>
-                  <div className="font-semibold">500+ verified student hostels</div>
-                </div>
-              </div>
-              <div className="flex gap-3 items-start">
-                <span className="text-2xl">📍</span>
-                <div>
-                  <div className="font-semibold">Near every major university</div>
-                </div>
-              </div>
-              <div className="flex gap-3 items-start">
-                <span className="text-2xl">🛡️</span>
-                <div>
-                  <div className="font-semibold">100% safe & trusted</div>
-                </div>
-              </div>
-            </div>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div>
+          <label htmlFor="email" className="mb-2 block text-sm font-semibold text-slate-700">
+            Email address
+          </label>
+          <div className="relative">
+            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2">
+              <Icon type="email" />
+            </span>
+            <input
+              id="email"
+              type="email"
+              name="email"
+              placeholder="you@example.com"
+              value={formData.email}
+              onChange={handleInputChange}
+              required
+              className="min-h-12 w-full rounded-xl border border-slate-200 bg-white py-3 pl-12 pr-4 text-slate-900 outline-none transition focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
+            />
           </div>
         </div>
 
-        {/* Right Panel */}
-        <div className="flex items-center justify-center p-8">
-          <div className="w-full max-w-md space-y-8">
-            {/* Header */}
-            <Link to="/" className="lg:hidden flex items-center gap-2 mb-8">
-              <svg className="w-8 h-8" viewBox="0 0 40 40" fill="none">
-                <rect width="40" height="40" rx="10" fill="url(#lg1-mobile)" />
-                <path d="M20 8L8 18H12V30H18V23H22V30H28V18H32L20 8Z" fill="white" />
-                <defs>
-                  <linearGradient id="lg1-mobile" x1="0" y1="0" x2="40" y2="40">
-                    <stop stopColor="#2563eb" />
-                    <stop offset="1" stopColor="#1e3a5f" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <span className="text-xl font-black text-primary-700 font-display">
-                Apna<span className="text-blue-500">Room</span>
-              </span>
-            </Link>
-
-            <div>
-              <h1 className="text-3xl font-bold text-primary-700 font-display mb-2">Login to ApnaRoom</h1>
-              <p className="text-gray-600">Choose your account type to get started</p>
-            </div>
-
-            {/* Role Tabs */}
-            <div className="flex gap-4 bg-gray-100 p-1 rounded-lg">
-              <button
-                onClick={() => setRole('student')}
-                className={`flex-1 py-2 px-4 rounded-md font-semibold transition-all ${
-                  role === 'student'
-                    ? 'bg-white text-primary-700 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                🎓 Student
-              </button>
-              <button
-                onClick={() => setRole('owner')}
-                className={`flex-1 py-2 px-4 rounded-md font-semibold transition-all ${
-                  role === 'owner'
-                    ? 'bg-white text-primary-700 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                🏠 Hostel Owner
-              </button>
-            </div>
-
-            {error && (
-              <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm">
-                {error}
-              </div>
-            )}
-
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
-                <div className="relative">
-                  <span className="absolute left-4 top-3.5 text-lg">✉</span>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="you@university.edu.pk"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
-                <div className="relative">
-                  <span className="absolute left-4 top-3.5 text-lg">🔒</span>
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    name="password"
-                    placeholder="Enter your password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-3.5 text-lg hover:opacity-70"
-                  >
-                    👁
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    name="rememberMe"
-                    checked={formData.rememberMe}
-                    onChange={handleInputChange}
-                    className="w-4 h-4 rounded accent-blue-600"
-                  />
-                  <span className="text-sm text-gray-600">Remember me</span>
-                </label>
-                <a href="#" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-                  Forgot password?
-                </a>
-              </div>
-
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full py-3 bg-gradient-to-r from-primary-700 to-blue-500 text-white rounded-lg font-semibold hover:shadow-lg transition-all active:scale-95 disabled:opacity-70"
-              >
-                {isLoading ? 'Logging in...' : 'Login →'}
-              </button>
-            </form>
-
-            {/* Divider */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-600">or continue with</span>
-              </div>
-            </div>
-
-            {/* Social Buttons */}
-            <div className="grid grid-cols-2 gap-4">
-              <button className="py-3 px-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all flex items-center justify-center gap-2 font-medium">
-                <svg className="w-5 h-5" viewBox="0 0 48 48">
-                  <path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.9 33.6 29.4 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 8 3l5.7-5.7C34 6 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.2-2.6-.4-3.9z" />
-                </svg>
-                Google
-              </button>
-              <button className="py-3 px-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all flex items-center justify-center gap-2 font-medium">
-                📱 Phone
-              </button>
-            </div>
-
-            {/* Footer Text */}
-            <p className="text-center text-gray-600">
-              Don't have an account?{' '}
-              <Link
-                to="/signup"
-                className="text-blue-600 hover:text-blue-700 font-semibold cursor-pointer"
-              >
-                Sign up free →
-              </Link>
-            </p>
+        <div>
+          <label htmlFor="password" className="mb-2 block text-sm font-semibold text-slate-700">
+            Password
+          </label>
+          <div className="relative">
+            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2">
+              <Icon type="lock" />
+            </span>
+            <input
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              placeholder="Enter your password"
+              value={formData.password}
+              onChange={handleInputChange}
+              required
+              className="min-h-12 w-full rounded-xl border border-slate-200 bg-white py-3 pl-12 pr-12 text-slate-900 outline-none transition focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 rounded-md p-1 transition hover:bg-slate-100"
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+            >
+              <Icon type="eye" />
+            </button>
           </div>
         </div>
+
+        <div className="flex items-center justify-between gap-4">
+          <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-600">
+            <input
+              type="checkbox"
+              name="rememberMe"
+              checked={formData.rememberMe}
+              onChange={handleInputChange}
+              className="h-4 w-4 rounded border-slate-300 accent-blue-600"
+            />
+            Remember me
+          </label>
+          <a href="#" className="text-sm font-semibold text-blue-700 transition-colors hover:text-primary-700">
+            Forgot password?
+          </a>
+        </div>
+
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="min-h-12 w-full rounded-xl bg-gradient-to-r from-primary-700 to-blue-500 px-5 py-3 font-semibold text-white shadow-sm transition-all hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:opacity-70"
+        >
+          {isLoading ? 'Signing in...' : 'Sign in'}
+        </button>
+      </form>
+
+      <div className="my-7 flex items-center gap-4">
+        <div className="h-px flex-1 bg-slate-200"></div>
+        <span className="text-sm text-slate-500">or continue with</span>
+        <div className="h-px flex-1 bg-slate-200"></div>
       </div>
-    </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <button
+          type="button"
+          className="flex min-h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+        >
+          <span className="text-blue-600">G</span>
+          Google
+        </button>
+        <button
+          type="button"
+          className="flex min-h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+        >
+          <Icon type="phone" />
+          Phone
+        </button>
+      </div>
+    </AuthShell>
   )
 }
