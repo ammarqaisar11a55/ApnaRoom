@@ -87,7 +87,7 @@ export default function Hero({ onNavigate }) {
             <div className="relative">
               <div className="aspect-[5/4] w-full overflow-hidden rounded-[2rem] border border-blue-100 bg-blue-50 shadow-lg">
                 <img
-                  src={assetUrl('assets/karachi.png')}
+                  src={assetUrl('assets/herosectionrightpic.jpg')}
                   alt="Modern hostel building in the city"
                   className="h-full w-full object-cover"
                 />
