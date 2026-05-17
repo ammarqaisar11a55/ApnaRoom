@@ -1,4 +1,8 @@
-const API_BASE = 'http://localhost:3000/api';
+// ===== API CONFIGURATION =====
+// Change this to your Vercel backend URL after deployment
+// Local dev: 'http://localhost:5000/api'
+// Production: 'https://your-backend.vercel.app/api'
+const API_BASE = 'http://localhost:5000/api';
 
 // ===== TOAST NOTIFICATIONS =====
 function showToast(message, type = 'success') {
@@ -119,8 +123,9 @@ if (loginForm) {
         btn.textContent = '✓ Success!';
         btn.classList.add('btn-success');
         showToast(`Welcome back, ${data.user.name}! 🎉`, 'success');
-        // Store user info
+        // Store user info and JWT token
         localStorage.setItem('apnaroom_user', JSON.stringify(data.user));
+        localStorage.setItem('apnaroom_token', data.token);
         setTimeout(() => { window.location.href = 'index.html'; }, 2000);
       } else {
         showToast(data.error, 'error');
@@ -197,7 +202,9 @@ if (signupForm) {
         btn.textContent = '✓ Account Created!';
         btn.classList.add('btn-success');
         showToast(`Welcome to ApnaRoom, ${data.user.name}! 🎉`, 'success');
+        // Store user info and JWT token
         localStorage.setItem('apnaroom_user', JSON.stringify(data.user));
+        localStorage.setItem('apnaroom_token', data.token);
         setTimeout(() => { window.location.href = 'login.html'; }, 2000);
       } else {
         showToast(data.error, 'error');
