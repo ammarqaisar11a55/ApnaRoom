@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ApnaRoom — Student Hostels Across Pakistan</title>
+  <meta name="description" content="ApnaRoom is Pakistan's #1 student hostel platform. Find verified, affordable hostels near your university in Lahore, Islamabad, Karachi, and more." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Animated Background Blobs -->
+  <div class="bg-blob bg-blob--1"></div>
+  <div class="bg-blob bg-blob--2"></div>
+  <div class="bg-blob bg-blob--3"></div>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-logo">
+        <svg class="logo-icon" width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="40" height="40" rx="10" fill="url(#logoGrad)"/>
+          <path d="M20 8L8 18H12V30H18V23H22V30H28V18H32L20 8Z" fill="white"/>
+          <path d="M15 12L20 8L25 12" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/>
+          <circle cx="20" cy="10" r="2" fill="white" opacity="0.6"/>
+          <defs><linearGradient id="logoGrad" x1="0" y1="0" x2="40" y2="40"><stop stop-color="#2563eb"/><stop offset="1" stop-color="#1e3a5f"/></linearGradient></defs>
+        </svg>
+        Apna<span>Room</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#cities">Cities</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#features">Why Us</a></li>
+        <li><a href="#testimonials">Reviews</a></li>
+        <li><a href="login.html" class="btn-nav-outline">Login</a></li>
+        <li><a href="signup.html" class="btn-nav">Sign Up Free</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-close" id="mobileClose" aria-label="Close menu">✕</button>
+    <a href="#cities" class="mobile-link">Cities</a>
+    <a href="#how-it-works" class="mobile-link">How It Works</a>
+    <a href="#features" class="mobile-link">Why Us</a>
+    <a href="#testimonials" class="mobile-link">Reviews</a>
+    <a href="login.html" class="mobile-link">Login</a>
+    <a href="signup.html" class="btn-nav mobile-link">Sign Up Free</a>
+  </div>
+
+  <!-- ===== HERO ===== -->
+  <header class="hero" id="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="dot"></span>
+          Pakistan's #1 Student Hostel Platform
+        </div>
+        <h1>Find Your<br /><span class="highlight">Apna Room</span><br />Near Campus</h1>
+        <p>Verified, affordable, and student-friendly hostels near every major university in Pakistan. Focus on your studies — we'll handle your stay.</p>
+        <div class="hero-search">
+          <input type="text" id="searchInput" placeholder="Search by university, city, or hostel name..." />
+          <button type="button" id="searchBtn">Search →</button>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <h3 id="statHostels">0</h3>
+            <p>Verified Hostels</p>
+          </div>
+          <div class="hero-stat">
+            <h3 id="statCities">0</h3>
+            <p>Universities Covered</p>
+          </div>
+          <div class="hero-stat">
+            <h3 id="statGuests">0</h3>
+            <p>Happy Students</p>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-image-wrapper">
+          <img src="assets/hero.png" alt="Modern student hostel common area in Pakistan" />
+        </div>
+        <div class="hero-float-card hero-float-card--1">
+          <div class="card-row">
+            <span class="icon">🎓</span>
+            <div>
+              <div class="label">Top University</div>
+              <div class="value">LUMS, Lahore</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-float-card hero-float-card--2">
+          <div class="card-row">
+            <span class="icon">⭐</span>
+            <div>
+              <div class="label">Avg. Rating</div>
+              <div class="value">4.8 <span class="stars">★★★★★</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== CITIES ===== -->
+  <section id="cities">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Explore</span>
+        <h2 class="section-title">Popular Student Cities</h2>
+        <p class="section-subtitle">Find hostels near top universities in Pakistan's biggest education hubs.</p>
+      </div>
+      <div class="cities-grid">
+        <div class="city-card reveal">
+          <img src="assets/lahore.png" alt="Badshahi Mosque in Lahore at golden hour" />
+          <div class="city-card-content">
+            <h3>Lahore</h3>
+            <p>42 Hostels • LUMS, UET, PU, UMT</p>
+          </div>
+        </div>
+        <div class="city-card reveal">
+          <img src="assets/islamabad.png" alt="Faisal Mosque in Islamabad at sunset" />
+          <div class="city-card-content">
+            <h3>Islamabad</h3>
+            <p>35 Hostels • NUST, COMSATS, QAU</p>
+          </div>
+        </div>
+        <div class="city-card reveal">
+          <img src="assets/karachi.png" alt="Karachi coastline skyline at blue hour" />
+          <div class="city-card-content">
+            <h3>Karachi</h3>
+            <p>28 Hostels • IBA, NED, FAST</p>
+          </div>
+        </div>
+        <div class="city-card reveal">
+          <img src="assets/hunza.png" alt="Hunza Valley with Karakoram mountains" />
+          <div class="city-card-content">
+            <h3>Peshawar</h3>
+            <p>18 Hostels • UET, UoP, IMSciences</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section id="how-it-works">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Simple Process</span>
+        <h2 class="section-title">How ApnaRoom Works</h2>
+        <p class="section-subtitle">Get settled into your hostel in just 3 simple steps — easier than registering for a course.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card reveal">
+          <span class="step-number">01</span>
+          <div class="step-icon">🔍</div>
+          <h3>Search Near Your Uni</h3>
+          <p>Enter your university name or city. Filter by budget, distance, room type, and amenities.</p>
+        </div>
+        <div class="step-card reveal">
+          <span class="step-number">02</span>
+          <div class="step-icon">📋</div>
+          <h3>Compare & Choose</h3>
+          <p>Read student reviews, view verified photos, compare monthly rates, and pick your perfect room.</p>
+        </div>
+        <div class="step-card reveal">
+          <span class="step-number">03</span>
+          <div class="step-icon">🎉</div>
+          <h3>Book & Move In</h3>
+          <p>Book instantly online. Show up with your bags, check in, and start your semester stress-free!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section id="features">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Why Choose Us</span>
+        <h2 class="section-title">Built for Pakistani Students</h2>
+        <p class="section-subtitle">We know the student hostel struggle. That's why we built ApnaRoom — by students, for students.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <div class="feature-icon">🛡️</div>
+          <h3>Verified & Safe</h3>
+          <p>Every hostel is personally inspected. We check security, cleanliness, and student-friendliness.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">💰</div>
+          <h3>Student Budgets</h3>
+          <p>Hostels starting from PKR 5,000/month. No hidden charges. Transparent monthly pricing.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">📍</div>
+          <h3>Near Your Campus</h3>
+          <p>Filter by distance to your university. Walking distance hostels for every major campus.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">📱</div>
+          <h3>24/7 Support</h3>
+          <p>Need help? Our support team is always a message away — in Urdu or English.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">🍽️</div>
+          <h3>Meals & Amenities</h3>
+          <p>Filter by Wi-Fi, AC, laundry, meals included, study rooms, and more student essentials.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">🤝</div>
+          <h3>Roommate Matching</h3>
+          <p>Find compatible roommates from your university. Share rooms and split costs easily.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIALS ===== -->
+  <section id="testimonials">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">Student Reviews</span>
+        <h2 class="section-title">Loved by Students</h2>
+        <p class="section-subtitle">Don't take our word for it — hear from students who found their Apna Room.</p>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card reveal">
+          <div class="quote-icon">"</div>
+          <p>Found an amazing hostel near NUST within my budget. Clean rooms, great food, and the booking was super easy. Highly recommend for freshers!</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">AK</div>
+            <div class="testimonial-info">
+              <h4>Ahmed Khan</h4>
+              <span>BS CS, NUST Islamabad</span>
+            </div>
+          </div>
+          <div class="testimonial-rating">★★★★★</div>
+        </div>
+        <div class="testimonial-card reveal">
+          <div class="quote-icon">"</div>
+          <p>As a female student from KPK, safety was my top concern. ApnaRoom's verified girls' hostels near PU gave me and my parents complete peace of mind.</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">SF</div>
+            <div class="testimonial-info">
+              <h4>Sara Fatima</h4>
+              <span>MBBS, Punjab University</span>
+            </div>
+          </div>
+          <div class="testimonial-rating">★★★★★</div>
+        </div>
+        <div class="testimonial-card reveal">
+          <div class="quote-icon">"</div>
+          <p>Switched from a terrible hostel to an ApnaRoom-verified one near IBA. Better food, Wi-Fi that actually works, and AC in Karachi summers. Life saver!</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">ZA</div>
+            <div class="testimonial-info">
+              <h4>Zain Ali</h4>
+              <span>BBA, IBA Karachi</span>
+            </div>
+          </div>
+          <div class="testimonial-rating">★★★★★</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA ===== -->
+  <section class="cta-section" id="cta">
+    <div class="container">
+      <div class="cta-box reveal">
+        <h2>Own a Student Hostel?<br />List It on ApnaRoom</h2>
+        <p>Join 500+ hostel owners across Pakistan. Reach thousands of students looking for rooms near their campus — completely free.</p>
+        <a href="signup.html?role=owner" class="btn-cta" id="listHostelBtn">List Your Hostel Free →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo">
+            <svg class="logo-icon" width="28" height="28" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="40" height="40" rx="10" fill="url(#logoGrad2)"/>
+              <path d="M20 8L8 18H12V30H18V23H22V30H28V18H32L20 8Z" fill="white"/>
+              <defs><linearGradient id="logoGrad2" x1="0" y1="0" x2="40" y2="40"><stop stop-color="#2563eb"/><stop offset="1" stop-color="#1e3a5f"/></linearGradient></defs>
+            </svg>
+            Apna<span>Room</span>
+          </a>
+          <p>Pakistan's most trusted student hostel platform. Connecting students with affordable, verified, and comfortable hostels since 2024.</p>
+          <div class="footer-socials">
+            <a href="#" aria-label="Facebook">𝕗</a>
+            <a href="#" aria-label="Instagram">📷</a>
+            <a href="#" aria-label="Twitter">𝕏</a>
+            <a href="#" aria-label="YouTube">▶</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <a href="#cities">Popular Cities</a>
+          <a href="#">Lahore Hostels</a>
+          <a href="#">Islamabad Hostels</a>
+          <a href="#">Karachi Hostels</a>
+          <a href="#">Peshawar Hostels</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#">About Us</a>
+          <a href="#">Careers</a>
+          <a href="#">Blog</a>
+          <a href="#">Press</a>
+          <a href="#">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <a href="#">Help Center</a>
+          <a href="#">Safety</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Cancellation Policy</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024 ApnaRoom. Made with ❤️ in Pakistan. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

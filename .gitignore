@@ -1,0 +1,26 @@
+# Node dependencies
+node_modules/
+
+# Local environment files
+
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Database files
+*.db
+*.db-shm
+*.db-wal
+
+# MacOS
+.DS_Store
+
+# VS Code workspace settings
+.vscode/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
