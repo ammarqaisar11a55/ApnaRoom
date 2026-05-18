@@ -10,6 +10,9 @@ export type Paginated<T> = {
   pagination: Pagination;
 };
 
+type HostelSummary = Pick<Hostel, "_id" | "name" | "city">;
+type RoomSummary = Pick<Room, "_id" | "roomNumber" | "roomType">;
+
 export type Hostel = {
   _id: string;
   name: string;
@@ -58,8 +61,8 @@ export type Room = {
 
 export type Booking = {
   _id: string;
-  hostel: Pick<Hostel, "name" | "city">;
-  room?: Pick<Room, "roomNumber" | "roomType">;
+  hostel: HostelSummary;
+  room?: RoomSummary;
   guest: { name: string; email: string; phone: string; university?: string };
   requestedMoveIn?: string;
   bedsRequested: number;
@@ -71,8 +74,8 @@ export type Booking = {
 
 export type Tenant = {
   _id: string;
-  hostel: Pick<Hostel, "name" | "city">;
-  room?: Pick<Room, "roomNumber" | "roomType">;
+  hostel: HostelSummary | string;
+  room?: RoomSummary;
   name: string;
   email?: string;
   phone: string;
@@ -102,7 +105,7 @@ export type Owner = {
 
 export type Review = {
   _id: string;
-  hostel: Pick<Hostel, "name" | "city">;
+  hostel: HostelSummary;
   authorName: string;
   rating: number;
   comment: string;

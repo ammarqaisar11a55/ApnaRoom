@@ -183,7 +183,7 @@ export default function TenantsPage() {
             const days = Math.max(Math.ceil((Date.now() - new Date(tenant.moveInDate).getTime()) / 86400000), 0);
             return [
               <div key="tenant"><p className="font-semibold">{tenant.name}</p><p className="text-xs text-slate-500">{tenant.phone}</p></div>,
-              tenant.hostel?.name || "Hostel",
+              typeof tenant.hostel === "string" ? "Hostel" : tenant.hostel.name,
               tenant.room?.roomNumber || "Unassigned",
               new Date(tenant.moveInDate).toLocaleDateString(),
               latest ? `${latest.status} · ${formatCurrency(latest.amount)}` : "No records",
