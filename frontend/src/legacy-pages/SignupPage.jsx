@@ -152,7 +152,7 @@ export default function SignupPage() {
     if (passwordStrength <= 1) return 'bg-red-500'
     if (passwordStrength === 2) return 'bg-amber-500'
     if (passwordStrength === 3) return 'bg-blue-500'
-    return 'bg-emerald-500'
+    return 'bg-blue-500'
   }
 
   return (

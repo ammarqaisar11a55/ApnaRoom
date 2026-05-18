@@ -1,25 +1,76 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const morgan = require('morgan');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
+const hostelRoutes = require('./routes/hostelRoutes');
+const roomRoutes = require('./routes/roomRoutes');
+const bookingRoutes = require('./routes/bookingRoutes');
+const tenantRoutes = require('./routes/tenantRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
+const { notFound, errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
 
-// ===== MIDDLEWARE =====
+// ===== SECURITY + CORE MIDDLEWARE =====
+app.set('trust proxy', 1);
+app.use(helmet());
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(cors({
   origin: process.env.FRONTEND_URL || '*',
   credentials: true,
 }));
-app.use(express.json());
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ extended: true, limit: '2mb' }));
+app.use((req, _res, next) => {
+  const clean = (value) => {
+    if (typeof value === 'string') return value.replace(/[<>]/g, '');
+    if (Array.isArray(value)) return value.map(clean);
+    if (value && typeof value === 'object') {
+      Object.keys(value).forEach((key) => {
+        if (key.startsWith('$') || key.includes('.')) {
+          delete value[key];
+          return;
+        }
+        value[key] = clean(value[key]);
+      });
+    }
+    return value;
+  };
+  clean(req.body);
+  clean(req.query);
+  clean(req.params);
+  next();
+});
+
+app.use('/api', rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 250,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  message: { error: 'Too many requests. Please slow down and try again.' },
+}));
 
 // ===== HEALTH CHECK =====
 app.get('/', (req, res) => {
-  res.json({ message: '🏠 ApnaRoom API is running', status: 'ok' });
+  res.json({ message: 'ApnaRoom API is running', status: 'ok' });
 });
 
 // ===== API ROUTES =====
-app.use('/api', authRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/hostels', hostelRoutes);
+app.use('/api/rooms', roomRoutes);
+app.use('/api/bookings', bookingRoutes);
+app.use('/api/tenants', tenantRoutes);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/notifications', notificationRoutes);
+
+app.use(notFound);
+app.use(errorHandler);
 
 // ===== CONNECT TO DB =====
 connectDB();
@@ -28,8 +79,8 @@ connectDB();
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
-    console.log(`\n🏠 ApnaRoom API running at http://localhost:${PORT}`);
-    console.log(`📦 Database: MongoDB Atlas\n`);
+    console.log(`\nApnaRoom API running at http://localhost:${PORT}`);
+    console.log('Database: MongoDB\n');
   });
 }
 

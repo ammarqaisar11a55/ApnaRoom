@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
+  /* Primary brand colors */
   --color-primary-50: #f0f4f8;
   --color-primary-100: #e2e8f0;
   --color-primary-500: #2563eb;
@@ -8,17 +11,87 @@
   --color-primary-700: #1e3a5f;
   --color-primary-800: #0f2744;
 
+  /* Semantic colors - Error */
+  --color-error-50: #fef2f2;
+  --color-error-100: #fee2e2;
+  --color-error-600: #dc2626;
+  --color-error-700: #b91c1c;
+
+  /* Semantic colors - Success */
+  --color-success-50: #f0fdf4;
+  --color-success-100: #dcfce7;
+  --color-success-600: #16a34a;
+  --color-success-700: #15803d;
+
+  /* Semantic colors - Warning */
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-500: #eab308;
+  --color-warning-600: #d97706;
+
+  /* Semantic colors - Info (aligns with primary) */
+  --color-info-50: #f0f4f8;
+  --color-info-500: #2563eb;
+  --color-info-700: #1e40af;
+
+  /* Neutral colors - Slate */
+  --color-slate-50: #f8fafc;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-300: #cbd5e1;
+  --color-slate-400: #94a3b8;
+  --color-slate-600: #475569;
+  --color-slate-700: #334155;
+  --color-slate-800: #1e293b;
+  --color-slate-900: #0f172a;
+  --color-slate-950: #020617;
+
+  /* Focus and interaction colors */
+  --color-focus-ring: #2563eb;
+  --color-focus-ring-light: #dbeafe;
+  --color-input-accent: #2563eb;
+
+  /* Skeleton/loading colors */
+  --color-skeleton-light: #e2e8f0;
+  --color-skeleton-dark: #334155;
+
+  /* Fonts */
   --font-display: "Outfit", sans-serif;
   --font-body: "Inter", sans-serif;
 
+  /* Border radius */
   --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 22px;
   --radius-xl: 32px;
 
+  /* Shadows */
   --shadow-sm: 0 2px 8px rgb(30 58 95 / 0.06);
   --shadow-card: 0 4px 24px rgb(30 58 95 / 0.08);
   --shadow-lg: 0 12px 40px rgb(30 58 95 / 0.12);
+}
+
+:root {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+body {
+  background: #f8fafc;
+  color: #0f172a;
+  font-family: var(--font-body);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: #e0e7ff;
+  color: #1e3a5f;
 }
 
 
@@ -28,7 +101,7 @@
   }
 
   .section-tag {
-    @apply inline-block px-4 py-2 bg-blue-50 text-blue-600 rounded-full text-sm font-medium;
+    @apply inline-block px-4 py-2 bg-primary-50 text-primary-600 rounded-full text-sm font-medium;
   }
 
   .section-title {
@@ -36,7 +109,7 @@
   }
 
   .section-subtitle {
-    @apply text-lg text-gray-600 max-w-2xl mx-auto;
+    @apply text-lg text-slate-600 max-w-2xl mx-auto;
   }
 
   .btn-primary {

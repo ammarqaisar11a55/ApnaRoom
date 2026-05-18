@@ -1,0 +1,24 @@
+"use client";
+
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import type { Owner } from "@/types/domain";
+
+type AuthState = {
+  token: string | null;
+  user: Owner | null;
+  setSession: (token: string, user: Owner) => void;
+  logout: () => void;
+};
+
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      token: null,
+      user: null,
+      setSession: (token, user) => set({ token, user }),
+      logout: () => set({ token: null, user: null }),
+    }),
+    { name: "apnaroom-owner-session" }
+  )
+);

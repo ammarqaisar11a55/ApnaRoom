@@ -2,6 +2,11 @@
 node_modules/
 
 # Local environment files
+.env
+.env.*
+!.env.example
+frontend/.env
+backend/.env
 
 
 # Logs
@@ -25,3 +30,6 @@ yarn-error.log*
 *.temp
 *.log
 dist/
+.next/
+frontend/.next/
+*.tsbuildinfo

@@ -41,9 +41,9 @@ export default function Hero({ onNavigate }) {
         <div className="grid gap-12 lg:grid-cols-[1.02fr_0.98fr] lg:items-center">
           <div className="space-y-8">
             <div className="inline-block">
-              <div className="flex items-center gap-2 rounded-full border border-blue-100 bg-white/85 px-4 py-2 shadow-sm">
-                <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                <span className="text-sm font-medium text-blue-600">Pakistan's #1 Student Hostel Platform</span>
+              <div className="flex items-center gap-2 rounded-full border border-primary-100 bg-white/85 px-4 py-2 shadow-sm">
+                <span className="w-2 h-2 bg-primary-500 rounded-full"></span>
+                <span className="text-sm font-medium text-primary-600">Pakistan's #1 Student Hostel Platform</span>
               </div>
             </div>
 

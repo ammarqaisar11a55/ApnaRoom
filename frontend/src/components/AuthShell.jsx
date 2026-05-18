@@ -9,13 +9,13 @@ export function BrandMark({ dark = false }) {
         <path d="M20 8 8 18h4v12h6v-7h4v7h6V18h4L20 8Z" fill="white" />
         <defs>
           <linearGradient id="auth-logo-gradient" x1="0" y1="0" x2="40" y2="40">
-            <stop stopColor="#2563eb" />
-            <stop offset="1" stopColor="#1e3a5f" />
+            <stop stopColor="rgb(37, 99, 235)" />
+            <stop offset="1" stopColor="rgb(30, 58, 95)" />
           </linearGradient>
         </defs>
       </svg>
       <span className={`text-2xl font-black font-display ${dark ? 'text-white' : 'text-primary-700'}`}>
-        Apna<span className={dark ? 'text-blue-200' : 'text-blue-500'}>Room</span>
+        Apna<span className={dark ? 'text-primary-200' : 'text-primary-500'}>Room</span>
       </span>
     </Link>
   )
@@ -23,7 +23,7 @@ export function BrandMark({ dark = false }) {
 
 function CheckIcon() {
   return (
-    <svg className="h-5 w-5 text-blue-600" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg className="h-5 w-5 text-primary-600" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="m20 6-11 11-5-5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
@@ -46,7 +46,7 @@ export default function AuthShell({ eyebrow, title, subtitle, children, footer }
               alt="Modern hostel building"
               className="h-full w-full object-cover opacity-45"
             />
-            <div className="absolute inset-0 bg-gradient-to-br from-primary-800 via-primary-800/88 to-blue-700/70"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-primary-800 via-primary-800/88 to-primary-600/70"></div>
           </div>
 
           <div className="relative z-10">

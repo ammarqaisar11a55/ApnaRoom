@@ -31,9 +31,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Role is required'],
       enum: {
-        values: ['student', 'owner'],
-        message: 'Role must be either student or owner',
+        values: ['student', 'owner', 'admin'],
+        message: 'Role must be student, owner, or admin',
       },
+      default: 'owner',
     },
     university: {
       type: String,
@@ -47,6 +48,15 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    avatar: String,
+    notificationPreferences: {
+      bookings: { type: Boolean, default: true },
+      payments: { type: Boolean, default: true },
+      reviews: { type: Boolean, default: true },
+      marketing: { type: Boolean, default: false },
+    },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
   },
   {
     timestamps: true, // Adds createdAt and updatedAt automatically
@@ -76,8 +86,12 @@ userSchema.methods.toSafeObject = function () {
     university: this.university,
     hostelName: this.hostelName,
     city: this.city,
+    avatar: this.avatar,
+    notificationPreferences: this.notificationPreferences,
     createdAt: this.createdAt,
   };
 };
+
+userSchema.index({ role: 1, city: 1 });
 
 module.exports = mongoose.model('User', userSchema);
