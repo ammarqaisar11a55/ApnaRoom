@@ -92,7 +92,9 @@ app.use(notFound);
 app.use(errorHandler);
 
 // ===== CONNECT TO DB =====
-connectDB();
+connectDB().catch((error) => {
+  console.error('Database connection failed:', error.message);
+});
 
 // ===== START SERVER (only when running directly, not via Vercel) =====
 if (process.env.NODE_ENV !== 'production') {
