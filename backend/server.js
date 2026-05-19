@@ -16,12 +16,25 @@ const { notFound, errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
 
+const stripTrailingSlash = (value) => value.replace(/\/+$/, '');
+const allowedOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || '')
+  .split(',')
+  .map((value) => value.trim())
+  .filter(Boolean)
+  .map(stripTrailingSlash);
+
 // ===== SECURITY + CORE MIDDLEWARE =====
 app.set('trust proxy', 1);
 app.use(helmet());
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.length === 0) return callback(null, true);
+    const normalizedOrigin = stripTrailingSlash(origin);
+    if (allowedOrigins.includes(normalizedOrigin)) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
 }));
 app.use(express.json({ limit: '2mb' }));
