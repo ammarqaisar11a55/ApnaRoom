@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { assetUrl } from '../utils/assets'
 
 export default function Hero({ onNavigate }) {
+  const navigate = useNavigate()
   const [stats, setStats] = useState({
     hostels: 0,
     cities: 0,
@@ -31,9 +33,13 @@ export default function Hero({ onNavigate }) {
   const handleSearch = () => {
     const searchInput = document.getElementById('searchInput')?.value
     if (searchInput) {
-      alert(`Searching for: ${searchInput}`)
+      navigate(`/hostels?search=${encodeURIComponent(searchInput)}`)
+    } else {
+      navigate('/hostels')
     }
   }
+
+
 
   return (
     <section className="relative px-6 pb-20 pt-32">

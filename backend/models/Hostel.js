@@ -73,7 +73,7 @@ const hostelSchema = new mongoose.Schema(
     thumbnail: imageSchema,
     images: [imageSchema],
     policies: { type: String, default: '' },
-    status: { type: String, enum: ['draft', 'published', 'unpublished'], default: 'draft', index: true },
+    status: { type: String, enum: ['draft', 'published', 'unpublished', 'pending', 'approved', 'rejected'], default: 'pending', index: true },
     analytics: analyticsSchema,
   },
   { timestamps: true }

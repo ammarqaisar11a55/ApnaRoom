@@ -91,7 +91,7 @@ export type Owner = {
   name: string;
   email: string;
   phone: string;
-  role: "owner";
+  role: "owner" | "admin";
   city?: string;
   hostelName?: string;
   avatar?: string;

@@ -51,9 +51,9 @@ const login = async (req, res, next) => {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    const user = await User.findOne({ email, role: 'owner' }).select('+password');
+    const user = await User.findOne({ email, role: { $in: ['owner', 'admin'] } }).select('+password');
     if (!user || !(await user.comparePassword(password))) {
-      return res.status(401).json({ error: 'Invalid owner email or password' });
+      return res.status(401).json({ error: 'Invalid email or password' });
     }
 
     sendAuthResponse(res, 200, 'Login successful', user);
@@ -67,9 +67,9 @@ const forgotPassword = async (req, res, next) => {
     const { email } = req.body;
     if (!email) return res.status(400).json({ error: 'Email is required' });
 
-    const user = await User.findOne({ email, role: 'owner' });
+    const user = await User.findOne({ email, role: { $in: ['owner', 'admin'] } });
     if (!user) {
-      return res.json({ message: 'If this owner email exists, reset instructions will be sent.' });
+      return res.json({ message: 'If this email exists, reset instructions will be sent.' });
     }
 
     const resetToken = crypto.randomBytes(32).toString('hex');

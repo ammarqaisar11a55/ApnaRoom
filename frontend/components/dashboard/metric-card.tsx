@@ -1,9 +1,21 @@
 import { ArrowUpRight, LucideIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
-export function MetricCard({ title, value, helper, icon: Icon }: { title: string; value: string | number; helper: string; icon: LucideIcon }) {
+export function MetricCard({
+  title,
+  value,
+  helper,
+  icon: Icon,
+  className,
+}: {
+  title: string;
+  value: string | number;
+  helper: string;
+  icon: LucideIcon;
+  className?: string;
+}) {
   return (
-    <Card>
+    <Card className={className}>
       <CardContent className="p-5">
         <div className="flex items-start justify-between gap-4">
           <div>

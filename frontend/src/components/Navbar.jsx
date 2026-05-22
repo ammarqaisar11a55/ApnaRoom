@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 
 const navItems = [
+  { label: 'Find Hostels', href: '/hostels' },
   { label: 'Cities', href: '#cities' },
   { label: 'How it works', href: '#how-it-works' },
   { label: 'Why ApnaRoom', href: '#features' },
@@ -30,13 +31,23 @@ function Logo() {
 
 export default function Navbar({ scrolled }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const navigate = useNavigate()
+  const location = useLocation()
 
-  const handleScrollTo = (e, href) => {
-    e.preventDefault()
-    setMobileMenuOpen(false)
-    const element = document.querySelector(href)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  const handleNavItemClick = (e, item) => {
+    if (item.href.startsWith('#')) {
+      e.preventDefault()
+      setMobileMenuOpen(false)
+      if (location.pathname !== '/') {
+        navigate('/' + item.href)
+      } else {
+        const element = document.querySelector(item.href)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+      }
+    } else {
+      setMobileMenuOpen(false)
     }
   }
 
@@ -53,16 +64,23 @@ export default function Navbar({ scrolled }) {
           <Logo />
 
           <div className="hidden items-center gap-1 lg:flex">
-            {navItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                onClick={(e) => handleScrollTo(e, item.href)}
-                className="rounded-xl px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50 hover:text-primary-800"
-              >
-                {item.label}
-              </a>
-            ))}
+            {navItems.map((item) => {
+              const isHash = item.href.startsWith('#');
+              const Element = isHash ? 'a' : Link;
+              const props = isHash
+                ? { href: item.href, onClick: (e) => handleNavItemClick(e, item) }
+                : { to: item.href, onClick: (e) => handleNavItemClick(e, item) };
+
+              return (
+                <Element
+                  key={item.label}
+                  {...props}
+                  className="rounded-xl px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50 hover:text-primary-800"
+                >
+                  {item.label}
+                </Element>
+              );
+            })}
           </div>
 
           <div className="hidden items-center gap-3 md:flex">
@@ -98,16 +116,23 @@ export default function Navbar({ scrolled }) {
         {mobileMenuOpen && (
           <div className="border-t border-slate-100 px-4 pb-4 pt-2 md:hidden">
             <div className="grid gap-1">
-              {navItems.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  onClick={(e) => handleScrollTo(e, item.href)}
-                  className="rounded-xl px-3 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 hover:text-primary-800"
-                >
-                  {item.label}
-                </a>
-              ))}
+              {navItems.map((item) => {
+                const isHash = item.href.startsWith('#');
+                const Element = isHash ? 'a' : Link;
+                const props = isHash
+                  ? { href: item.href, onClick: (e) => handleNavItemClick(e, item) }
+                  : { to: item.href, onClick: (e) => handleNavItemClick(e, item) };
+
+                return (
+                  <Element
+                    key={item.label}
+                    {...props}
+                    className="rounded-xl px-3 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 hover:text-primary-800"
+                  >
+                    {item.label}
+                  </Element>
+                );
+              })}
             </div>
 
             <div className="mt-4 grid grid-cols-2 gap-3">
@@ -132,3 +157,4 @@ export default function Navbar({ scrolled }) {
     </header>
   )
 }
+

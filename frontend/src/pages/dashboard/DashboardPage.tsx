@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/store/auth-store";
 import { BarChart, Bar, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, PieChart, Pie, Cell } from "recharts";
 import { BedDouble, Building2, CalendarCheck, CreditCard, Users } from "lucide-react";
 import { api } from "@/lib/api";
@@ -39,13 +41,20 @@ const fallback = {
 export default function DashboardPage() {
   const [data, setData] = useState(fallback);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuthStore();
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (user?.role === "admin") {
+      navigate("/dashboard/admin/hostels", { replace: true });
+      return;
+    }
+
     api.get("/hostels/analytics/summary")
       .then((response) => setData(response.data))
       .catch(() => setData(fallback))
       .finally(() => setLoading(false));
-  }, []);
+  }, [user, navigate]);
 
   if (loading) {
     return (

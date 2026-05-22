@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import HomePage from './legacy-pages/HomePage'
+import HostelsBrowsePage from './pages/HostelsBrowsePage'
 import AuthLayout from './layouts/AuthLayout'
 import LoginPage from './pages/auth/LoginPage'
 import SignupPage from './pages/auth/SignupPage'
@@ -16,7 +17,9 @@ import ReviewsPage from './pages/dashboard/ReviewsPage'
 import RoomsPage from './pages/dashboard/RoomsPage'
 import SettingsPage from './pages/dashboard/SettingsPage'
 import TenantsPage from './pages/dashboard/TenantsPage'
+import AdminHostelsPage from './pages/dashboard/AdminHostelsPage'
 import NotFoundPage from './pages/NotFoundPage'
+
 import { DashboardShell } from '../components/dashboard/dashboard-shell'
 
 function AuthRoute({ children }) {
@@ -32,6 +35,7 @@ export default function App() {
     <div className="min-h-screen bg-white">
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/hostels" element={<HostelsBrowsePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/forgot-password" element={<AuthRoute><ForgotPasswordPage /></AuthRoute>} />
@@ -47,9 +51,11 @@ export default function App() {
         <Route path="/dashboard/rooms" element={<DashboardRoute><RoomsPage /></DashboardRoute>} />
         <Route path="/dashboard/settings" element={<DashboardRoute><SettingsPage /></DashboardRoute>} />
         <Route path="/dashboard/tenants" element={<DashboardRoute><TenantsPage /></DashboardRoute>} />
+        <Route path="/dashboard/admin/hostels" element={<DashboardRoute><AdminHostelsPage /></DashboardRoute>} />
         <Route path="/app" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </div>
   )
 }
+

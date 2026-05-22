@@ -37,12 +37,21 @@ const navItems = [
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
+const adminNavItems = [
+  { href: "/dashboard/admin/hostels", label: "Verify Listings", icon: Building2 },
+  { href: "/dashboard/notifications", label: "Notifications", icon: Bell },
+  { href: "/dashboard/settings", label: "Settings", icon: Settings },
+];
+
 export function DashboardShell({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const { user, token, logout } = useAuthStore();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const itemsToRender = user?.role === "admin" ? adminNavItems : navItems;
+
 
   useEffect(() => {
     if (!token) navigate("/login", { replace: true });
@@ -70,11 +79,11 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           <p className="font-display text-lg font-black tracking-normal text-primary-800 dark:text-white">
             Apna<span className="text-blue-500">Room</span>
           </p>
-          <p className="text-xs text-slate-500">Owner console</p>
+          <p className="text-xs text-slate-500">{user?.role === "admin" ? "Super Admin console" : "Owner console"}</p>
         </div>
       </div>
       <nav className="flex-1 space-y-1 overflow-y-auto p-3">
-        {navItems.map((item) => {
+        {itemsToRender.map((item) => {
           const active = item.href === "/dashboard" ? pathname === item.href : pathname.startsWith(item.href);
           const Icon = item.icon;
           return (
@@ -123,8 +132,14 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               <Menu className="h-5 w-5" />
             </Button>
             <div>
-              <p className="font-display text-sm font-bold text-primary-800 dark:text-white">Owner Dashboard</p>
-              <p className="hidden text-xs text-slate-500 sm:block">{user?.hostelName || "Manage listings, rooms, bookings, and tenants"}</p>
+              <p className="font-display text-sm font-bold text-primary-800 dark:text-white">
+                {user?.role === "admin" ? "Super Admin Dashboard" : "Owner Dashboard"}
+              </p>
+              <p className="hidden text-xs text-slate-500 sm:block">
+                {user?.role === "admin"
+                  ? "Review and verify hostel marketplace submissions"
+                  : user?.hostelName || "Manage listings, rooms, bookings, and tenants"}
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -143,7 +158,9 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                 {user?.name?.slice(0, 2).toUpperCase() || "AR"}
               </div>
               <div className="leading-tight">
-                <p className="text-sm font-semibold text-slate-950 dark:text-white">{user?.name || "Owner"}</p>
+                <p className="text-sm font-semibold text-slate-950 dark:text-white">
+                  {user?.name || (user?.role === "admin" ? "Super Admin" : "Owner")}
+                </p>
                 <p className="text-xs text-slate-500">{user?.email || "owner@apnaroom.com"}</p>
               </div>
             </div>
