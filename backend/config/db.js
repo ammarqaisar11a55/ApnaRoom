@@ -36,7 +36,4 @@ const connectDB = async () => {
   return cachedPromise;
 };
 
-global.__mongoose_conn = cachedConn;
-global.__mongoose_promise = cachedPromise;
-
 module.exports = connectDB;
