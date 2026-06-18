@@ -30,7 +30,7 @@ export function LoginForm() {
       const { data } = await api.post("/auth/login", values);
       setSession(data.token, data.user);
       toast.success("Welcome back to ApnaRoom.");
-      navigate("/dashboard");
+      navigate(data.user.role === 'student' ? '/hostels' : '/dashboard');
     } catch (error: any) {
       toast.error(error.response?.data?.error || "Login failed");
     }

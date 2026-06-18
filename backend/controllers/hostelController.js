@@ -169,4 +169,78 @@ const getAnalytics = async (req, res, next) => {
   }
 };
 
-module.exports = { getHostels, getHostel, createHostel, updateHostel, deleteHostel, getAnalytics };
+const getPublicHostels = async (req, res, next) => {
+  try {
+    const filter = { status: 'approved' };
+    
+    if (req.query.city) {
+      filter.city = { $regex: new RegExp(req.query.city, 'i') };
+    }
+    
+    if (req.query.type) {
+      filter.type = req.query.type;
+    }
+    
+    if (req.query.university) {
+      filter.nearbyUniversities = { $regex: new RegExp(req.query.university, 'i') };
+    }
+    
+    if (req.query.search) {
+      filter.$or = [
+        { name: { $regex: new RegExp(req.query.search, 'i') } },
+        { description: { $regex: new RegExp(req.query.search, 'i') } },
+        { city: { $regex: new RegExp(req.query.search, 'i') } },
+        { address: { $regex: new RegExp(req.query.search, 'i') } },
+      ];
+    }
+    
+    if (req.query.maxRent) {
+      filter['pricing.monthlyRent'] = { $lte: Number(req.query.maxRent) };
+    }
+
+    let sortOption = { createdAt: -1 };
+    if (req.query.sort === 'price-asc') {
+      sortOption = { 'pricing.monthlyRent': 1 };
+    } else if (req.query.sort === 'price-desc') {
+      sortOption = { 'pricing.monthlyRent': -1 };
+    } else if (req.query.sort === 'views-desc') {
+      sortOption = { 'analytics.views': -1 };
+    }
+
+    const result = await paginate(
+      Hostel.find(filter).sort(sortOption),
+      Hostel.countDocuments(filter),
+      req.query
+    );
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getPublicHostel = async (req, res, next) => {
+  try {
+    const hostel = await Hostel.findOne({ _id: req.params.id, status: 'approved' });
+    if (!hostel) return res.status(404).json({ error: 'Hostel not found' });
+    
+    hostel.analytics = hostel.analytics || { views: 0, inquiries: 0, conversionRate: 0 };
+    hostel.analytics.views = (hostel.analytics.views || 0) + 1;
+    await hostel.save();
+
+    res.json({ item: hostel });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = {
+  getHostels,
+  getHostel,
+  createHostel,
+  updateHostel,
+  deleteHostel,
+  getAnalytics,
+  getPublicHostels,
+  getPublicHostel,
+};
+

@@ -9,7 +9,7 @@ router.post('/signup', signup);
 router.post('/login', login);
 router.post('/forgot-password', forgotPassword);
 
-router.use(protect, authorize('owner'));
+router.use(protect, authorize('owner', 'student'));
 router.get('/me', getMe);
 router.put('/profile', updateProfile);
 router.put('/change-password', changePassword);

@@ -6,6 +6,8 @@ const {
   updateHostel,
   deleteHostel,
   getAnalytics,
+  getPublicHostels,
+  getPublicHostel,
 } = require('../controllers/hostelController');
 const { protect, authorize } = require('../middleware/auth');
 const validate = require('../middleware/validate');
@@ -14,8 +16,13 @@ const { hostelRequest, hostelIdRequest, hostelUpdateRequest } = require('../vali
 
 const router = express.Router();
 
+// Public routes for students
+router.get('/public', getPublicHostels);
+router.get('/public/:id', getPublicHostel);
+
 router.use(protect, authorize('owner'));
 router.get('/analytics/summary', getAnalytics);
+
 router.route('/').get(getHostels).post(
   upload.fields([{ name: 'thumbnail', maxCount: 1 }, { name: 'images', maxCount: 10 }]),
   validate(hostelRequest),

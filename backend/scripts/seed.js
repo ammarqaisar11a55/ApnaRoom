@@ -11,7 +11,7 @@ const Notification = require('../models/Notification');
 const seed = async () => {
   await mongoose.connect(process.env.MONGO_URI);
   await Promise.all([
-    User.deleteMany({ email: 'owner@apnaroom.com' }),
+    User.deleteMany({ email: { $in: ['owner@apnaroom.com', 'admin@apnaroom.com'] } }),
     Hostel.deleteMany({}),
     Room.deleteMany({}),
     Booking.deleteMany({}),
@@ -29,6 +29,16 @@ const seed = async () => {
     hostelName: 'Apna Heights',
     city: 'Lahore',
   });
+
+  const admin = await User.create({
+    name: 'Super Admin',
+    email: 'admin@apnaroom.com',
+    phone: '+92 300 9999999',
+    password: 'AdminPass123',
+    role: 'admin',
+    city: 'Lahore',
+  });
+
 
   const hostel = await Hostel.create({
     owner: owner._id,
@@ -50,7 +60,7 @@ const seed = async () => {
     timings: { checkIn: '13:00', checkOut: '12:00' },
     thumbnail: { url: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2', alt: 'Hostel room' },
     images: [{ url: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267', alt: 'Room interior' }],
-    status: 'published',
+    status: 'approved',
     analytics: { views: 1840, inquiries: 132, conversionRate: 7.1 },
   });
 
@@ -91,7 +101,7 @@ const seed = async () => {
     { owner: owner._id, type: 'payment_received', title: 'Payment received', message: 'Maham Ali paid PKR 28,000 for May.' },
   ]);
 
-  console.log('Seed complete: owner@apnaroom.com / OwnerPass123');
+  console.log('Seed complete: \n- Owner: owner@apnaroom.com / OwnerPass123\n- Admin: admin@apnaroom.com / AdminPass123');
   await mongoose.disconnect();
 };
 

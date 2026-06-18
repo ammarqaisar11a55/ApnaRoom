@@ -1,6 +1,8 @@
+import { useNavigate } from 'react-router-dom'
 import { assetUrl } from '../utils/assets'
 
 export default function Cities() {
+  const navigate = useNavigate()
   const cities = [
     {
       name: 'Lahore',
@@ -37,6 +39,7 @@ export default function Cities() {
           {cities.map((city) => (
             <div
               key={city.name}
+              onClick={() => navigate(`/hostels?city=${city.name}`)}
               className="group relative cursor-pointer overflow-hidden rounded-2xl border border-white bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lg reveal"
             >
               <img
@@ -55,3 +58,4 @@ export default function Cities() {
     </section>
   )
 }
+

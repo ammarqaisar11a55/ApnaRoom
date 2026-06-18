@@ -45,19 +45,29 @@ const uploadImageBuffer = async (file, folder = 'apnaroom') => {
     };
   }
 
-  const dataUri = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
-  const result = await cloudinary.uploader.upload(dataUri, {
-    folder,
-    resource_type: 'image',
-    transformation: [{ width: 1600, crop: 'limit' }, { quality: 'auto', fetch_format: 'auto' }],
-  });
+  try {
+    const dataUri = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
+    const result = await cloudinary.uploader.upload(dataUri, {
+      folder,
+      resource_type: 'image',
+      transformation: [{ width: 1600, crop: 'limit' }, { quality: 'auto', fetch_format: 'auto' }],
+    });
 
-  return {
-    url: result.secure_url,
-    publicId: result.public_id,
-    alt: file.originalname,
-  };
+    return {
+      url: result.secure_url,
+      publicId: result.public_id,
+      alt: file.originalname,
+    };
+  } catch (error) {
+    console.warn(`Cloudinary upload failed (${error.message}), falling back to local base64 storage.`);
+    return {
+      url: `data:${file.mimetype};base64,${file.buffer.toString('base64')}`,
+      publicId: '',
+      alt: file.originalname,
+    };
+  }
 };
+
 
 const mapUploadedImages = async (files = {}, folder = 'apnaroom') => {
   const thumbnailFile = files.thumbnail?.[0];

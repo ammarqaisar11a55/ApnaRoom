@@ -146,12 +146,18 @@ export default function BookingsPage() {
       </div>
       {!data ? <Skeleton className="h-80" /> : (
         <DataTable
-          columns={["Guest", "Hostel", "Beds", "Amount", "Booking status", "Payment", "Actions"]}
+          columns={["Guest", "Hostel", "Beds", "Move-in", "Amount", "Booking status", "Payment", "Actions"]}
           empty="No booking requests yet."
           rows={data.items.map((booking) => [
-            <div key="guest"><p className="font-semibold">{booking.guest.name}</p><p className="text-xs text-slate-500">{booking.guest.phone}</p></div>,
+            <div key="guest" className="space-y-0.5">
+              <p className="font-semibold">{booking.guest.name}</p>
+              <p className="text-xs text-slate-500">{booking.guest.email}</p>
+              <p className="text-xs text-slate-500">{booking.guest.phone}</p>
+              {booking.guest.university && <p className="text-xs text-blue-600 font-medium">🎓 {booking.guest.university}</p>}
+            </div>,
             booking.hostel?.name || "Hostel",
             booking.bedsRequested,
+            booking.requestedMoveIn ? new Date(booking.requestedMoveIn).toLocaleDateString() : "—",
             formatCurrency(booking.amount),
             <Badge key="status">{booking.status}</Badge>,
             <Badge key="payment">{booking.paymentStatus}</Badge>,
