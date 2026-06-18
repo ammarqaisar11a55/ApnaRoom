@@ -54,7 +54,7 @@ export default function LoginPage() {
 
       if (response.ok) {
         useAuthStore.getState().setSession(data.token, data.user)
-        navigate('/dashboard')
+        navigate(data.user.role === 'student' ? '/hostels' : '/dashboard')
       } else {
         setError(data.error || 'Login failed')
       }

@@ -23,7 +23,15 @@ import {
   Bookmark,
   CheckCircle2,
   Users,
-  Compass
+  Compass,
+  Send,
+  Loader2,
+  CheckCircle,
+  User,
+  Mail,
+  GraduationCap,
+  Bed,
+  FileText
 } from "lucide-react";
 import { api } from "@/lib/api";
 import { formatCurrency } from "@/lib/utils";
@@ -96,6 +104,21 @@ export default function HostelsBrowsePage() {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [selectedHostel, setSelectedHostel] = useState<Hostel | null>(null);
   const [activeTab, setActiveTab] = useState<"about" | "facilities" | "contact">("about");
+
+  // Inquiry form state
+  const [showInquiryForm, setShowInquiryForm] = useState(false);
+  const [inquirySubmitting, setInquirySubmitting] = useState(false);
+  const [inquirySuccess, setInquirySuccess] = useState(false);
+  const [inquiryForm, setInquiryForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    university: "",
+    preferredRoomType: "",
+    moveInDate: "",
+    bedsNeeded: 1,
+    notes: "",
+  });
 
   // Load Hostels function
   async function loadHostels() {
@@ -198,8 +221,57 @@ export default function HostelsBrowsePage() {
     }
   };
 
+  // Open inquiry form for the selected hostel
+  const openInquiryForm = () => {
+    setInquirySuccess(false);
+    setShowInquiryForm(true);
+  };
+
+  // Close inquiry form and reset
+  const closeInquiryForm = () => {
+    setShowInquiryForm(false);
+    setInquirySuccess(false);
+    setInquiryForm({
+      name: "",
+      email: "",
+      phone: "",
+      university: "",
+      preferredRoomType: "",
+      moveInDate: "",
+      bedsNeeded: 1,
+      notes: "",
+    });
+  };
+
+  // Submit inquiry to backend
+  const submitInquiry = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedHostel) return;
+    setInquirySubmitting(true);
+    try {
+      await api.post("/bookings/inquire", {
+        hostelId: selectedHostel._id,
+        guest: {
+          name: inquiryForm.name,
+          email: inquiryForm.email,
+          phone: inquiryForm.phone,
+          university: inquiryForm.university || undefined,
+        },
+        preferredRoomType: inquiryForm.preferredRoomType || undefined,
+        requestedMoveIn: inquiryForm.moveInDate || undefined,
+        bedsRequested: inquiryForm.bedsNeeded,
+        notes: inquiryForm.notes || undefined,
+      });
+      setInquirySuccess(true);
+    } catch (error: any) {
+      alert(error.response?.data?.error || "Failed to submit inquiry. Please try again.");
+    } finally {
+      setInquirySubmitting(false);
+    }
+  };
+
   return (
-    <div className="relative min-h-screen bg-slate-50/50 pb-12 font-body text-slate-800">
+    <div className="light-mode relative min-h-screen bg-slate-50/50 pb-12 font-body text-slate-800">
       {/* Floating Header */}
       <Navbar scrolled={true} />
 
@@ -822,12 +894,14 @@ export default function HostelsBrowsePage() {
 
             {/* Modal Actions Footer */}
             <div className="border-t border-slate-100 p-6 flex flex-col sm:flex-row gap-3 bg-slate-50 shrink-0">
-              <a
-                href={`tel:${selectedHostel.contact.phone}`}
-                className="flex-1 text-center py-3 px-6 rounded-xl bg-gradient-to-r from-primary-700 to-primary-500 hover:from-primary-800 hover:to-primary-600 text-white font-bold shadow-md active:scale-[0.98] transition"
+              <button
+                type="button"
+                onClick={openInquiryForm}
+                className="flex-1 flex items-center justify-center gap-2 py-3 px-6 rounded-xl bg-gradient-to-r from-primary-700 to-primary-500 hover:from-primary-800 hover:to-primary-600 text-white font-bold shadow-md active:scale-[0.98] transition"
               >
+                <Send className="h-4 w-4" />
                 Inquire & Book Now
-              </a>
+              </button>
               <Button
                 variant="outline"
                 className="h-12 border-slate-200 bg-white hover:bg-slate-100"
@@ -835,6 +909,216 @@ export default function HostelsBrowsePage() {
               >
                 Close Quick View
               </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* INQUIRY FORM MODAL */}
+      {showInquiryForm && selectedHostel && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-md animate-fade-in">
+          <div
+            className="relative w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-2xl max-h-[90vh] flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Inquiry Form Header */}
+            <div className="relative bg-gradient-to-br from-primary-800 via-primary-700 to-blue-600 p-6 text-white shrink-0">
+              <button
+                onClick={closeInquiryForm}
+                className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm transition hover:bg-white/35 active:scale-95"
+                aria-label="Close inquiry form"
+              >
+                <X className="h-4 w-4" />
+              </button>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15 backdrop-blur-sm">
+                  <Send className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-display text-xl font-bold">Book Your Room</h3>
+                  <p className="text-sm text-blue-200">Submit your details below</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-blue-100 bg-white/10 rounded-xl px-3 py-2">
+                <Building className="h-4 w-4 shrink-0" />
+                <span className="truncate font-semibold">{selectedHostel.name}</span>
+                <span className="text-blue-300">•</span>
+                <span className="truncate">{selectedHostel.city}</span>
+              </div>
+            </div>
+
+            {/* Form Content */}
+            <div className="flex-1 overflow-y-auto p-6 scrollbar-thin">
+              {inquirySuccess ? (
+                // Success State
+                <div className="text-center py-8 space-y-4">
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 animate-bounce">
+                    <CheckCircle className="h-8 w-8" />
+                  </div>
+                  <h4 className="font-display text-xl font-bold text-slate-800">Inquiry Submitted!</h4>
+                  <p className="text-sm text-slate-500 max-w-sm mx-auto">
+                    Your booking inquiry has been sent to <strong>{selectedHostel.name}</strong>. The hostel owner will review your request and get back to you soon.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3 pt-4 justify-center">
+                    <Button onClick={closeInquiryForm} className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl">
+                      Done
+                    </Button>
+                    <Button variant="outline" onClick={() => { closeInquiryForm(); setSelectedHostel(null); }} className="rounded-xl">
+                      Back to Browse
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                // Inquiry Form
+                <form onSubmit={submitInquiry} className="space-y-4">
+                  {/* Full Name */}
+                  <div className="space-y-1.5">
+                    <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500">
+                      <User className="h-3.5 w-3.5" /> Full Name <span className="text-red-500">*</span>
+                    </label>
+                    <Input
+                      required
+                      placeholder="Enter your full name"
+                      value={inquiryForm.name}
+                      onChange={(e) => setInquiryForm((p) => ({ ...p, name: e.target.value }))}
+                      className="h-11 rounded-xl border-slate-200 focus:border-blue-400 focus:ring-blue-400"
+                    />
+                  </div>
+
+                  {/* Email & Phone Row */}
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-1.5">
+                      <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500">
+                        <Mail className="h-3.5 w-3.5" /> Email <span className="text-red-500">*</span>
+                      </label>
+                      <Input
+                        required
+                        type="email"
+                        placeholder="your@email.com"
+                        value={inquiryForm.email}
+                        onChange={(e) => setInquiryForm((p) => ({ ...p, email: e.target.value }))}
+                        className="h-11 rounded-xl border-slate-200 focus:border-blue-400 focus:ring-blue-400"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500">
+                        <Phone className="h-3.5 w-3.5" /> Phone <span className="text-red-500">*</span>
+                      </label>
+                      <Input
+                        required
+                        type="tel"
+                        placeholder="03XX-XXXXXXX"
+                        value={inquiryForm.phone}
+                        onChange={(e) => setInquiryForm((p) => ({ ...p, phone: e.target.value }))}
+                        className="h-11 rounded-xl border-slate-200 focus:border-blue-400 focus:ring-blue-400"
+                      />
+                    </div>
+                  </div>
+
+                  {/* University */}
+                  <div className="space-y-1.5">
+                    <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500">
+                      <GraduationCap className="h-3.5 w-3.5" /> University / Institute
+                    </label>
+                    <Input
+                      placeholder="e.g. University of Central Punjab"
+                      value={inquiryForm.university}
+                      onChange={(e) => setInquiryForm((p) => ({ ...p, university: e.target.value }))}
+                      className="h-11 rounded-xl border-slate-200 focus:border-blue-400 focus:ring-blue-400"
+                    />
+                  </div>
+
+                  {/* Room Type & Move-in Date */}
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-1.5">
+                      <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500">
+                        <Building className="h-3.5 w-3.5" /> Preferred Room Type
+                      </label>
+                      <select
+                        value={inquiryForm.preferredRoomType}
+                        onChange={(e) => setInquiryForm((p) => ({ ...p, preferredRoomType: e.target.value }))}
+                        className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400"
+                      >
+                        <option value="">Any Room Type</option>
+                        {(selectedHostel.roomTypes || []).map((type) => (
+                          <option key={type} value={type}>{type} Sharing</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500">
+                        <Calendar className="h-3.5 w-3.5" /> Preferred Move-in Date
+                      </label>
+                      <Input
+                        type="date"
+                        value={inquiryForm.moveInDate}
+                        onChange={(e) => setInquiryForm((p) => ({ ...p, moveInDate: e.target.value }))}
+                        className="h-11 rounded-xl border-slate-200 focus:border-blue-400 focus:ring-blue-400"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Beds Needed */}
+                  <div className="space-y-1.5">
+                    <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500">
+                      <Bed className="h-3.5 w-3.5" /> Number of Beds Needed
+                    </label>
+                    <Input
+                      type="number"
+                      min="1"
+                      max="10"
+                      value={inquiryForm.bedsNeeded}
+                      onChange={(e) => setInquiryForm((p) => ({ ...p, bedsNeeded: Number(e.target.value) }))}
+                      className="h-11 rounded-xl border-slate-200 focus:border-blue-400 focus:ring-blue-400"
+                    />
+                  </div>
+
+                  {/* Additional Notes */}
+                  <div className="space-y-1.5">
+                    <label className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-500">
+                      <FileText className="h-3.5 w-3.5" /> Additional Notes
+                    </label>
+                    <textarea
+                      placeholder="Any specific requirements, questions, or preferences..."
+                      value={inquiryForm.notes}
+                      onChange={(e) => setInquiryForm((p) => ({ ...p, notes: e.target.value }))}
+                      rows={3}
+                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none resize-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 placeholder-slate-400"
+                    />
+                  </div>
+
+                  {/* Monthly Rent Info Banner */}
+                  <div className="flex items-center gap-3 rounded-xl bg-blue-50 border border-blue-100 p-3.5 text-sm">
+                    <Info className="h-5 w-5 shrink-0 text-blue-500" />
+                    <div>
+                      <span className="font-semibold text-blue-800">Monthly Rent:</span>
+                      <span className="ml-1 font-bold text-blue-600">{formatCurrency(selectedHostel.pricing.monthlyRent)}</span>
+                      {selectedHostel.pricing.securityDeposit > 0 && (
+                        <span className="text-blue-500 ml-2">• Security Deposit: {formatCurrency(selectedHostel.pricing.securityDeposit)}</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Submit Button */}
+                  <button
+                    type="submit"
+                    disabled={inquirySubmitting}
+                    className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gradient-to-r from-primary-700 to-blue-600 hover:from-primary-800 hover:to-blue-700 text-white font-bold shadow-lg active:scale-[0.98] transition disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    {inquirySubmitting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Submitting...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="h-4 w-4" />
+                        Submit Inquiry
+                      </>
+                    )}
+                  </button>
+                </form>
+              )}
             </div>
           </div>
         </div>

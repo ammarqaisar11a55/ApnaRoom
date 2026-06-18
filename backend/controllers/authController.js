@@ -17,8 +17,8 @@ const signup = async (req, res, next) => {
     if (password.length < 8) {
       return res.status(400).json({ error: 'Password must be at least 8 characters' });
     }
-    if (role !== 'owner') {
-      return res.status(403).json({ error: 'Only hostel owner registration is available here' });
+    if (!['owner', 'student'].includes(role)) {
+      return res.status(400).json({ error: 'Role must be either student or owner' });
     }
 
     const existingUser = await User.findOne({ email });
@@ -37,7 +37,8 @@ const signup = async (req, res, next) => {
       city: city || null,
     });
 
-    sendAuthResponse(res, 201, 'Owner account created successfully', user);
+    const message = role === 'student' ? 'Student account created successfully' : 'Owner account created successfully';
+    sendAuthResponse(res, 201, message, user);
   } catch (err) {
     next(err);
   }
@@ -51,7 +52,7 @@ const login = async (req, res, next) => {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    const user = await User.findOne({ email, role: { $in: ['owner', 'admin'] } }).select('+password');
+    const user = await User.findOne({ email, role: { $in: ['owner', 'admin', 'student'] } }).select('+password');
     if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
