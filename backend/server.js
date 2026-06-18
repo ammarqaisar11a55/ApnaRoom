@@ -75,6 +75,14 @@ app.use('/api', rateLimit({
   legacyHeaders: false,
   message: { error: 'Too many requests. Please slow down and try again.' },
 }));
+app.use('/api', async (_req, _res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 // ===== HEALTH CHECK =====
 app.get('/', (req, res) => {
@@ -95,18 +103,20 @@ app.use('/api/admin', adminRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-// ===== CONNECT TO DB =====
-connectDB().catch((error) => {
-  console.error('Database connection failed:', error.message);
-});
-
-// ===== START SERVER (only when running directly, not via Vercel) =====
-if (process.env.NODE_ENV !== 'production') {
+// ===== START SERVER (only when running directly) =====
+if (require.main === module) {
   const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => {
-    console.log(`\nApnaRoom API running at http://localhost:${PORT}`);
-    console.log('Database: MongoDB\n');
-  });
+  connectDB()
+    .then(() => {
+      app.listen(PORT, () => {
+        console.log(`\nApnaRoom API running at http://localhost:${PORT}`);
+        console.log('Database: MongoDB\n');
+      });
+    })
+    .catch((error) => {
+      console.error(`❌ Failed to start server: ${error.message}`);
+      process.exit(1);
+    });
 }
 
 // Export for Vercel serverless
